@@ -1,6 +1,7 @@
 import { combineReducers } from "redux"
-import { articles, tags } from "./reducer";
-import { userInfo } from "./user"
+import articles from "./articles";
+import tags from "./tags";
+import userInfo from "./user";
 
 const rootReducer = combineReducers({
   articles,

@@ -10,6 +10,7 @@ export default class LoginPage extends React.Component {
       email: "",
       password: "",
       errors: {},
+      isLoading: false
     };
     this.changeText = this.changeText.bind(this);
     this.login = this.login.bind(this);
@@ -18,14 +19,17 @@ export default class LoginPage extends React.Component {
 
   login() {
     const { email, password } = this.state;
+    this.setState({
+      isLoading: true
+    });
     signIn(email, password).then(data => {
       if (data.errors) {
         this.setState({
-          errors: data.errors
+          errors: data.errors,
         });
       } else if (data.user) {
         this.setState({
-          errors: {}
+          errors: {},
         }, () => {
           localStorage.setItem(constants.USER_TOKEN, JSON.stringify(data.user.token));
           window.location.replace("/");
@@ -51,9 +55,9 @@ export default class LoginPage extends React.Component {
     const { errors } = this.state;
     return (
       <div className="auth-page">
+        {this.state.isLoading && <div className="loading" />}
         <div className="container page">
           <div className="row">
-
             <div className="col-md-6 offset-md-3 col-xs-12">
               <h1 className="text-xs-center">Sign in</h1>
               <p className="text-xs-center">

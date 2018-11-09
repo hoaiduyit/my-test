@@ -1,27 +1,20 @@
 import React from "react";
 import _ from "lodash"
-import { articleDetail, articleComment, addComment } from "../../services"
-import { TagList, CustomLink, ErrorItem, SuccessText } from "../elements"
+import { articleDetail } from "../../services"
+import { deleteArticle, updateComment } from "../../redux/action/article"
+import { TagList, CustomLink, ErrorItem } from "../elements"
 import { connectAutoDispatch } from "../hoc"
 import { ArticleMeta, AddComment, ArticleComment } from "../elements/article-detail"
 
-const apiArray = [
-  {
-    api: articleDetail,
-    keyName: "article"
-  },
-  {
-    api: articleComment,
-    keyName: "comments"
-  }
-]
-
 @connectAutoDispatch(state => {
   return {
+    errors: state.articles.errors || {},
+    comments: state.articles.comments,
     isLogin: state.userInfo && state.userInfo.isLogin,
-    user: state.userInfo && state.userInfo.user
+    user: state.userInfo && state.userInfo.user,
+    token: state.userInfo && state.userInfo.user.token
   }
-}, {})
+}, { deleteArticle, updateComment })
 class ArticleDetailPage extends React.Component {
   constructor(props) {
     super(props);
@@ -32,10 +25,12 @@ class ArticleDetailPage extends React.Component {
       text: "",
       comment: {},
       errors: {},
-      isSuccess: false
+      isLoading: false
     };
     this.onChangeText = this.onChangeText.bind(this);
     this.postComment = this.postComment.bind(this);
+    this.handleDeleteArticle = this.handleDeleteArticle.bind(this);
+    this.handleDeleteComment = this.handleDeleteComment.bind(this);
   }
 
   onChangeText(e) {
@@ -52,41 +47,66 @@ class ArticleDetailPage extends React.Component {
     })
   }
 
+  mounted = false
+
   componentDidMount() {
-    if (!_.isEmpty(apiArray)) {
-      for (let i = 0; i < apiArray.length; i++) {
-        this.fetchDataFromApi(this.props.match.params.articleId, apiArray[i].api, apiArray[i].keyName);
-      }
+    this.mounted = true;
+    this.props.updateComment(this.state.id);
+    this.fetchDataFromApi(this.props.match.params.articleId, articleDetail, "article");
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.comments !== prevProps.comments) {
+      this.setState({
+        text: "",
+        isLoading: false
+      })
+    }
+    if (this.props.errors !== prevProps.errors) {
+      this.setState({
+        isLoading: false
+      })
     }
   }
 
   postComment(e) {
     e.preventDefault();
-    addComment(this.state.id, this.state.text, this.props.user.token).then(data => {
-      if (data.errors) {
-        this.setState({
-          errors: data.errors,
-          isSuccess: false
-        })
-      } else {
-        articleComment(this.props.match.params.articleId).then(data => {
-          this.setState({
-            comments: data.comments && data.comments,
-            text: "",
-            errors: {},
-            isSuccess: true
-          })
-        })
-      }
+    this.setState({
+      isLoading: true
     })
+    this.props.updateComment(this.state.id, this.state.text, this.props.token);
+  }
+
+  handleDeleteComment(e, commentId) {
+    e.preventDefault();
+    this.setState({
+      isLoading: true
+    })
+    this.props.updateComment(this.state.id, undefined, this.props.token, commentId)
+  }
+
+  handleDeleteArticle(e) {
+    e.preventDefault();
+    this.props.deleteArticle(this.props.token, this.state.id);
+    this.setState({
+      isLoading: true
+    })
+    setTimeout(() => {
+      this.setState({
+        isLoading: false
+      })
+      window.location.replace("/");
+    }, 1000);
   }
 
   render() {
-    const { comments, article, errors } = this.state;
-    if (!comments && !article) return <div />
+    const { article } = this.state;
+    const { comments, errors } = this.props;
+    if (!this.mounted) return <div className="loading"></div>
 
     return (
       <div className="article-page">
+        {this.state.isLoading && <div className="loading"></div>}
         <div className="banner">
           <div className="container">
             <h1>{article.title}</h1>
@@ -95,10 +115,13 @@ class ArticleDetailPage extends React.Component {
               ownerImage={article.author && article.author.image}
               createdDate={article.createdAt}
               likeCount={article.favoritesCount}
+              userInfo={this.props.user}
+              articleId={this.state.id}
+              deleteArticle={this.handleDeleteArticle}
+              isShow
             />
           </div>
         </div>
-
         <div className="container page">
           <div className="row article-content">
             <div className="col-md-12">
@@ -113,13 +136,15 @@ class ArticleDetailPage extends React.Component {
               ownerImage={article.author && article.author.image}
               createdDate={article.createdAt}
               likeCount={article.favoritesCount}
+              userInfo={this.props.user}
+              articleId={this.state.id}
+              deleteArticle={this.handleDeleteArticle}
             />
           </div>
           <div className="row">
             <div className="col-xs-12 col-md-8 offset-md-2">
               {this.props.isLogin ? (
                 <span>
-                  {this.state.isSuccess && <SuccessText text="Your comment has been updated" />}
                   <ErrorItem listError={errors} errorKey="body" />
                   <AddComment
                     value={this.state.text}
@@ -136,12 +161,14 @@ class ArticleDetailPage extends React.Component {
               {!_.isEmpty(comments) && comments.map(item => {
                 return (
                   <ArticleComment
+                    commentId={item.id}
                     key={item.id}
                     user={this.props.user}
                     name={item.author && item.author.username}
                     image={item.author && item.author.image}
                     createdDate={item.createdAt}
                     comment={item.body}
+                    handleDeleteComment={this.handleDeleteComment}
                   />
                 )
               })}

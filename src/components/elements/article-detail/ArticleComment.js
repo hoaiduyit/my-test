@@ -2,7 +2,7 @@ import React from "react";
 import moment from "moment"
 import CustomLink from "../CustomLink"
 
-export default ({ name, image, comment, createdDate, user }) => {
+export default ({ commentId, name, image, comment, createdDate, user, handleDeleteComment }) => {
   const formatDate = moment(createdDate).format("MM-DD-YYYY");
   return (
     <div className="card">
@@ -23,8 +23,7 @@ export default ({ name, image, comment, createdDate, user }) => {
         />
         <span className="date-posted">{formatDate}</span>
         {user && user.username === name && (
-          <span className="mod-options">
-            <i className="ion-edit"></i>
+          <span className="mod-options" onClick={(e) => handleDeleteComment(e, commentId)}>
             <i className="ion-trash-a"></i>
           </span>
         )}

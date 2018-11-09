@@ -1,7 +1,8 @@
 import React from "react";
 import _ from "lodash"
 import { connectAutoDispatch } from "../hoc"
-import { updateArticle } from "../../redux/action/data"
+import { articleDetail } from "../../services"
+import { updateArticle } from "../../redux/action/article"
 import { CustomInput, ErrorItem, SuccessText } from "../elements"
 import { scrollToTop } from "../../utils"
 
@@ -40,17 +41,31 @@ class UpdateArticlePage extends React.Component {
       if (!_.isEmpty(this.state.errors)) {
         this.setState({
           isSuccess: false
-        }, () => {
-          scrollToTop(300);
         });
       } else {
         this.setState({
           isSuccess: true
-        }, () => {
-          scrollToTop(300);
         })
       }
     }
+  }
+
+  componentDidMount() {
+    if (this.props.match.params.articleId) {
+      articleDetail(this.props.match.params.articleId).then(data => {
+        this.fillForm(data.article);
+      })
+    }
+  }
+
+  fillForm(article) {
+    this.setState({
+      title: article.title,
+      description: article.description,
+      body: article.body,
+      tagList: article.tagList,
+      isSuccess: false
+    })
   }
 
   onChangeText(e, keyChange) {
@@ -62,7 +77,8 @@ class UpdateArticlePage extends React.Component {
   updateArticle(e) {
     e.preventDefault();
     const { title, description, body, tagList } = this.state;
-    this.props.updateArticle(title, description, body, tagList, this.props.token);
+    scrollToTop(600);
+    this.props.updateArticle(title, description, body, tagList, this.props.token, this.props.match.params.articleId);
   }
 
   render() {

@@ -3,7 +3,15 @@ import moment from "moment";
 import CustomLink from "./CustomLink"
 import TagList from "./TagList"
 
-export default ({ author, createAt, articleId, likeCount, title, description, tagList = [] }) => {
+export default ({
+  author,
+  createAt,
+  articleId,
+  likeCount,
+  title,
+  description,
+  tagList = [],
+  handleLikeArticle }) => {
   const { image, username } = author;
   const convertedDate = moment(createAt).format("MM-DD-YYYY");
   return (
@@ -15,7 +23,7 @@ export default ({ author, createAt, articleId, likeCount, title, description, ta
           <span className="date">{convertedDate}</span>
         </div>
       </div>
-      <button className="btn btn-outline-primary btn-sm pull-xs-right">
+      <button className="btn btn-outline-primary btn-sm pull-xs-right" onClick={handleLikeArticle}>
         <i className="ion-heart"></i> {likeCount}
       </button>
       <CustomLink url={`/article/${articleId}`} children={<span className="preview-link">

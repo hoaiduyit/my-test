@@ -1,7 +1,7 @@
 import React from "react";
 import _ from "lodash"
 import { connectAutoDispatch } from "../hoc"
-import { updateUserInfo } from "../../redux/action/data"
+import { updateUserInfo } from "../../redux/action/user"
 import { CustomInput, ErrorItem, SuccessText } from "../elements"
 import { scrollToTop } from "../../utils"
 

@@ -5,7 +5,7 @@ const initialState = {
   user: {}
 }
 
-export function userInfo(state = initialState, action) {
+export default function userInfo(state = initialState, action) {
   switch (action.type) {
     case FETCH_USER_INFO:
       return saveUserInfo(state, action.user)

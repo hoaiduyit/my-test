@@ -110,6 +110,22 @@ export function articleComment(articleId) {
   return comment;
 }
 
+export function deleteComment(articleId, token, commentId) {
+  const comment = fetch(`https://conduit.productionready.io/api/articles/${articleId}/comments/${commentId}`, {
+    method: "DELETE",
+    headers: {
+      "Authorization": `Token ${token}`,
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }).then(res => {
+    return res.json();
+  }).then(data => {
+    return data;
+  });
+
+  return comment;
+}
+
 export function addNewArticle(title, description, body, tagList, token) {
   const article = fetch(`https://conduit.productionready.io/api/articles`, {
     credentials: "same-origin",
@@ -133,4 +149,62 @@ export function addNewArticle(title, description, body, tagList, token) {
   })
 
   return article
+}
+
+export function updateArticle(title, description, body, tagList, token, articleId) {
+  const article = fetch(`https://conduit.productionready.io/api/articles/${articleId}`, {
+    credentials: "same-origin",
+    method: "PUT",
+    headers: {
+      "Authorization": `Token ${token}`,
+      "Content-Type": "application/json; charset=utf-8"
+    },
+    body: JSON.stringify({
+      article: {
+        title,
+        description,
+        body,
+        tagList
+      }
+    })
+  }).then(res => {
+    return res.json();
+  }).then(data => {
+    return data;
+  })
+
+  return article
+}
+
+export function deleteUserArticle(token, articleId) {
+  const article = fetch(`https://conduit.productionready.io/api/articles/${articleId}`, {
+    credentials: "same-origin",
+    method: "DELETE",
+    headers: {
+      "Authorization": `Token ${token}`,
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }).then(res => {
+    return res.json();
+  }).then(data => {
+    return data;
+  })
+
+  return article
+}
+
+export function getUserFeed(token) {
+  const articles = fetch("https://conduit.productionready.io/api/articles/feed", {
+    method: "GET",
+    headers: {
+      "Authorization": `Token ${token}`,
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }).then(res => {
+    return res.json();
+  }).then(data => {
+    return data;
+  })
+
+  return articles;
 }

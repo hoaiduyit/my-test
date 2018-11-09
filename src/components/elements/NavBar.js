@@ -41,7 +41,11 @@ class NavBar extends React.Component {
               </span>
             ) : (
                 <li className="nav-item">
-                  <span className="nav-link">{this.props.user.email}</span>
+                  <CustomLink
+                    url={`/profile/${this.props.user.username}`}
+                    className="nav-link"
+                    children={this.props.user.email}
+                  />
                 </li>
               )}
           </ul>

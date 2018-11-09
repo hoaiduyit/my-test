@@ -6,7 +6,11 @@ import {
   articleDetail,
   articleComment,
   addComment,
-  addNewArticle
+  addNewArticle,
+  getUserFeed,
+  updateArticle,
+  deleteUserArticle,
+  deleteComment
 } from "./articles";
 import { getListTags, filterArticlesByTag } from "./tags";
 import { signUp, signIn } from "./login-register"
@@ -26,5 +30,9 @@ export {
   addComment,
   getUserInfo,
   updateUserInfo,
-  addNewArticle
+  addNewArticle,
+  getUserFeed,
+  updateArticle,
+  deleteUserArticle,
+  deleteComment
 }

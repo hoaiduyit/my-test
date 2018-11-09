@@ -1,17 +1,19 @@
 import React from "react";
 import _ from "lodash"
 import { connectAutoDispatch } from "../hoc/connectAutoDispatch"
-import { filterByTag } from "../../redux/action/data"
-import { SingleItem, CustomLink } from "../elements"
+import { filterByTag } from "../../redux/action/tag"
+import { addUsernameToFetch } from "../../redux/action/article"
+import { SingleItem, CustomLink, CustomToggleNav } from "../elements"
 
 @connectAutoDispatch(state => {
   return {
     user: state.userInfo && state.userInfo.user,
     isLogin: state.userInfo && state.userInfo.isLogin,
     articles: state.articles.articles,
+    userArticles: state.articles.userArticles ? state.articles.userArticles : [],
     tags: state.tags.tags
   };
-}, { filterByTag })
+}, { filterByTag, addUsernameToFetch })
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
@@ -20,23 +22,50 @@ class HomePage extends React.Component {
       tagName: "",
       active: !props.isLogin ? "globalFeed" : "myFeed"
     };
-    this.selectFilter = this.selectFilter.bind(this);
     this.changeActiveNav = this.changeActiveNav.bind(this);
   }
 
-  selectFilter(tagName) {
-    this.props.filterByTag(tagName)
+  componentDidUpdate(prevProps, prevState) {
+    if (!_.isEmpty(this.props.user) && this.props.user !== prevProps.user) {
+      this.props.addUsernameToFetch(this.props.user.username)
+    }
+    if (this.props.location !== prevProps.location) {
+      if (_.isEmpty(this.props.location.search)) {
+        this.changeTagNameAndFilter("");
+      } else {
+        this.changeTagNameAndFilter(this.props.location.search.split("?tag=")[1])
+      }
+    }
+  }
+
+  changeTagNameAndFilter(tagName) {
+    this.setState({
+      tagName: tagName
+    }, () => this.props.filterByTag(tagName))
+  }
+
+  componentDidMount() {
+    if (this.props.location.search) {
+      this.changeTagNameAndFilter(this.props.location.search.split("?tag=")[1])
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props !== nextProps || this.state !== nextState
   }
 
   changeActiveNav(keyChange) {
     this.setState({
       active: keyChange
+    }, () => {
+      if (this.state.active === "myFeed") {
+        this.props.addUsernameToFetch(this.props.user.username)
+      }
     })
   }
 
   render() {
-    const { articles, tags } = this.props;
-
+    const { articles, tags, userArticles } = this.props;
     return (
       <div className="home-page">
 
@@ -46,24 +75,34 @@ class HomePage extends React.Component {
             <p>A place to share your knowledge.</p>
           </div>
         </div>
-
         <div className="container page">
           <div className="row">
-
             <div className="col-md-9">
               <div className="feed-toggle">
-                <ul className="nav nav-pills outline-active">
-                  {this.props.isLogin && (
-                    <li style={{ cursor: "pointer" }} className="nav-item">
-                      <span onClick={() => this.changeActiveNav("myFeed")} className={`nav-link ${this.state.active === "myFeed" ? "active" : ""}`}>Your Feed</span>
-                    </li>
-                  )}
-                  <li style={{ cursor: "pointer" }} className="nav-item">
-                    <span onClick={() => this.changeActiveNav("globalFeed")} className={`nav-link ${this.state.active === "globalFeed" || !this.props.isLogin ? "active" : ""}`}>{this.state.tagName !== "" ? this.state.tagName : `Global Feed`}</span>
-                  </li>
-                </ul>
+                <CustomToggleNav
+                  onClick={this.changeActiveNav}
+                  isShow={this.props.isLogin}
+                  active={this.state.active}
+                  tagName={this.state.tagName}
+                  toggleKey_1="myFeed"
+                  toggleText_1="My Feed"
+                  toggleKey_2="globalFeed"
+                  toggleText_2="Global Feed"
+                />
               </div>
-
+              {this.state.active === "myFeed" && !_.isEmpty(userArticles) && userArticles.map(item => {
+                return (
+                  <SingleItem
+                    key={item.slug}
+                    articleId={item.slug}
+                    author={item.author}
+                    createAt={item.createdAt}
+                    likeCount={item.favoritesCount}
+                    title={item.title}
+                    description={item.description}
+                  />
+                )
+              })}
               {this.state.active === "globalFeed" && !_.isEmpty(articles) && articles.articles && articles.articles.map(item => {
                 return (
                   <SingleItem
@@ -85,7 +124,15 @@ class HomePage extends React.Component {
                 <p>Popular Tags</p>
                 <div className="tag-list">
                   {!_.isEmpty(tags) && tags.tags && tags.tags.map((item, index) => {
-                    return <span key={`tag_${index}`} onClick={e => this.selectFilter(item)}><CustomLink url="/" className="tag-pill tag-default" children={item} /></span>
+                    return (
+                      <span key={`tag_${index}`}>
+                        <CustomLink
+                          url={`?tag=${item}`}
+                          className="tag-pill tag-default"
+                          children={item}
+                        />
+                      </span>
+                    )
                   })}
                 </div>
               </div>

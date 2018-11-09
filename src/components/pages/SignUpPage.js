@@ -10,7 +10,8 @@ class SignUpPage extends React.Component {
       username: "",
       email: "",
       password: "",
-      errors: {}
+      errors: {},
+      isLoading: false
     };
     this.changeText = this.changeText.bind(this);
     this.register = this.register.bind(this);
@@ -19,6 +20,9 @@ class SignUpPage extends React.Component {
 
   register() {
     const { username, email, password } = this.state;
+    this.setState({
+      isLoading: true
+    });
     signUp(username, email, password).then(data => {
       if (data.errors) {
         this.setState({
@@ -52,9 +56,9 @@ class SignUpPage extends React.Component {
     const { errors } = this.state;
     return (
       <div className="auth-page">
+        {this.state.isLoading && <div className="loading" />}
         <div className="container page">
           <div className="row">
-
             <div className="col-md-6 offset-md-3 col-xs-12">
               <h1 className="text-xs-center">Sign up</h1>
               <p className="text-xs-center">

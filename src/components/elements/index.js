@@ -7,6 +7,7 @@ import TagList from "./TagList"
 import CustomInput from "./CustomInput"
 import ErrorItem from "./signup-login-item/ErrorItem"
 import SuccessText from "./SuccessText"
+import CustomToggleNav from "./CustomToggleNav";
 
 export {
   CustomLink,
@@ -17,5 +18,6 @@ export {
   TagList,
   CustomInput,
   ErrorItem,
-  SuccessText
+  SuccessText,
+  CustomToggleNav
 }

@@ -10,6 +10,7 @@ import {
   SettingContainer,
   UpdateArticleContainer
 } from "./components/containers";
+import "./App.css";
 
 class App extends Component {
   render() {
@@ -24,6 +25,7 @@ class App extends Component {
           <Route path="/login" component={LoginContainer} />
           <Route path="/user-profile" component={SettingContainer} />
           <Route path="/add-article" component={UpdateArticleContainer} />
+          <Route path="/update-article/:articleId" component={UpdateArticleContainer} />
           <Footer />
         </div>
       </Router>
