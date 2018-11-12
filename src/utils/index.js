@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 function scrollToTop(scrollDuration) {
   const isIE = false || !!document.documentMode;
   if (typeof performance === "undefined") return;
@@ -15,4 +17,27 @@ function scrollToTop(scrollDuration) {
   window.requestAnimationFrame(step);
 }
 
-export { scrollToTop }
+function removeDuplicateElement(myArray) {
+  let array = [];
+  let follwingAuthors = [];
+  const removeDup = myArray.filter(item => {
+    if (array.indexOf(item.author.username) === -1) {
+      array.push(item.author.username);
+      return true
+    }
+    return false
+  })
+  !_.isEmpty(removeDup) && removeDup.map(item => {
+    follwingAuthors.push({ authorName: item.author.username, following: true });
+  })
+  return follwingAuthors;
+}
+
+function getPageFromUrl(page) {
+  if (page) {
+    return (parseInt(page, 10) / 10) + 1
+  }
+  return 1;
+}
+
+export { scrollToTop, removeDuplicateElement, getPageFromUrl }

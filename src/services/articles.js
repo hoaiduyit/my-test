@@ -208,3 +208,50 @@ export function getUserFeed(token) {
 
   return articles;
 }
+
+export function likeArticle(articleId, token) {
+  const article = fetch(`https://conduit.productionready.io/api/articles/${articleId}/favorite`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Token ${token}`,
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }).then(res => {
+    return res.json();
+  }).then(data => {
+    return data;
+  })
+
+  return article;
+}
+
+export function unlikeArticle(articleId, token) {
+  const article = fetch(`https://conduit.productionready.io/api/articles/${articleId}/favorite`, {
+    method: "DELETE",
+    headers: {
+      "Authorization": `Token ${token}`,
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }).then(res => {
+    return res.json();
+  }).then(data => {
+    return data;
+  })
+
+  return article;
+}
+
+export function pagination(itemPerPage, offset) {
+  const articles = fetch(`https://conduit.productionready.io/api/articles?limit=${itemPerPage}&offset=${offset}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8"
+    }
+  }).then(res => {
+    return res.json();
+  }).then(data => {
+    return data;
+  })
+
+  return articles
+}

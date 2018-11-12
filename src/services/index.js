@@ -10,11 +10,14 @@ import {
   getUserFeed,
   updateArticle,
   deleteUserArticle,
-  deleteComment
+  deleteComment,
+  likeArticle,
+  unlikeArticle,
+  pagination
 } from "./articles";
 import { getListTags, filterArticlesByTag } from "./tags";
 import { signUp, signIn } from "./login-register"
-import { getUserInfo, updateUserInfo } from "./user"
+import { getUserInfo, updateUserInfo, followAuthor, unfollowAuthor } from "./user"
 
 export {
   getArticleList,
@@ -34,5 +37,10 @@ export {
   getUserFeed,
   updateArticle,
   deleteUserArticle,
-  deleteComment
+  deleteComment,
+  followAuthor,
+  unfollowAuthor,
+  likeArticle,
+  unlikeArticle,
+  pagination
 }

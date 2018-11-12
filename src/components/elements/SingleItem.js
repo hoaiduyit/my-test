@@ -8,12 +8,30 @@ export default ({
   createAt,
   articleId,
   likeCount,
+  favorited,
   title,
   description,
   tagList = [],
-  handleLikeArticle }) => {
+  token,
+  actionOnArticle,
+  favoritedArticles
+}) => {
   const { image, username } = author;
   const convertedDate = moment(createAt).format("MM-DD-YYYY");
+
+  function handleLikeArticle(e, articleId, favorited) {
+    e.preventDefault();
+    if (token) {
+      if (favorited) {
+        actionOnArticle(articleId, token, "unlike");
+      } else {
+        actionOnArticle(articleId, token, "like")
+      }
+    } else {
+      window.location.replace("/login");
+    }
+  }
+
   return (
     <div className="article-preview">
       <div className="article-meta" >
@@ -23,7 +41,10 @@ export default ({
           <span className="date">{convertedDate}</span>
         </div>
       </div>
-      <button className="btn btn-outline-primary btn-sm pull-xs-right" onClick={handleLikeArticle}>
+      <button
+        className={`btn btn-outline-primary btn-sm pull-xs-right ${favorited && token ? "active" : ""}`}
+        onClick={(e) => handleLikeArticle(e, articleId, favorited)}
+      >
         <i className="ion-heart"></i> {likeCount}
       </button>
       <CustomLink url={`/article/${articleId}`} children={<span className="preview-link">
@@ -32,7 +53,6 @@ export default ({
         <span>Read more...</span>
         <TagList tagList={tagList} />
       </span>} />
-
     </div>
   )
 }

@@ -8,6 +8,7 @@ import CustomInput from "./CustomInput"
 import ErrorItem from "./signup-login-item/ErrorItem"
 import SuccessText from "./SuccessText"
 import CustomToggleNav from "./CustomToggleNav";
+import Pagination from "./Pagination"
 
 export {
   CustomLink,
@@ -19,5 +20,6 @@ export {
   CustomInput,
   ErrorItem,
   SuccessText,
-  CustomToggleNav
+  CustomToggleNav,
+  Pagination
 }

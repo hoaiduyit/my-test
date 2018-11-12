@@ -12,3 +12,6 @@ export const updateUserInfo = (email, username, password, bio, imageUrl, token) 
     token
   });
 export const failToFetchUserInfo = (errors) => ({ type: types.FAIL_TO_FETCH_USER_INFO, errors });
+export const getFollowingAuthorsList = (followingAuthors) => ({ type: types.FOLLOWING_AUTHORS, followingAuthors });
+
+export const fetchFavoritedArticles = (username, key) => ({ type: types.REFETCH_FAVORITED_ARTICLES, username, key });

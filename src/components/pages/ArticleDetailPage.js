@@ -1,20 +1,31 @@
 import React from "react";
 import _ from "lodash"
 import { articleDetail } from "../../services"
-import { deleteArticle, updateComment } from "../../redux/action/article"
+import { deleteArticle, updateComment, addUsernameToFetch } from "../../redux/action/article"
+import { getFollowingAuthorsList } from "../../redux/action/user";
+import { refetchAuthorProfileWithAction } from "../../redux/action/author";
 import { TagList, CustomLink, ErrorItem } from "../elements"
 import { connectAutoDispatch } from "../hoc"
 import { ArticleMeta, AddComment, ArticleComment } from "../elements/article-detail"
+import { removeDuplicateElement } from "../../utils"
 
 @connectAutoDispatch(state => {
   return {
+    userArticles: state.articles.userArticles ? state.articles.userArticles : [],
+    followingAuthors: state.userInfo && state.userInfo.followingAuthors,
     errors: state.articles.errors || {},
     comments: state.articles.comments,
     isLogin: state.userInfo && state.userInfo.isLogin,
     user: state.userInfo && state.userInfo.user,
     token: state.userInfo && state.userInfo.user.token
   }
-}, { deleteArticle, updateComment })
+}, {
+    deleteArticle,
+    updateComment,
+    getFollowingAuthorsList,
+    addUsernameToFetch,
+    refetchAuthorProfileWithAction
+  })
 class ArticleDetailPage extends React.Component {
   constructor(props) {
     super(props);
@@ -67,6 +78,12 @@ class ArticleDetailPage extends React.Component {
         isLoading: false
       })
     }
+    if (this.props.token && this.props.token !== prevProps.token) {
+      this.props.addUsernameToFetch(this.props.token);
+    }
+    if (this.props.userArticles !== prevProps.userArticles) {
+      this.props.getFollowingAuthorsList(removeDuplicateElement(this.props.userArticles));
+    }
   }
 
   postComment(e) {
@@ -99,9 +116,13 @@ class ArticleDetailPage extends React.Component {
     }, 1000);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps !== this.props || nextState !== this.state;
+  }
+
   render() {
     const { article } = this.state;
-    const { comments, errors } = this.props;
+    const { comments, errors, followingAuthors } = this.props;
     if (!this.mounted) return <div className="loading"></div>
 
     return (
@@ -118,6 +139,9 @@ class ArticleDetailPage extends React.Component {
               userInfo={this.props.user}
               articleId={this.state.id}
               deleteArticle={this.handleDeleteArticle}
+              followingAuthors={followingAuthors}
+              token={this.props.token}
+              refetchAuthorProfileWithAction={this.props.refetchAuthorProfileWithAction}
               isShow
             />
           </div>
@@ -138,7 +162,10 @@ class ArticleDetailPage extends React.Component {
               likeCount={article.favoritesCount}
               userInfo={this.props.user}
               articleId={this.state.id}
+              followingAuthors={followingAuthors}
               deleteArticle={this.handleDeleteArticle}
+              token={this.props.token}
+              refetchAuthorProfileWithAction={this.props.refetchAuthorProfileWithAction}
             />
           </div>
           <div className="row">

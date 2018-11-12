@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { HashRouter as Router, Route } from "react-router-dom";
 import { NavBar, Footer } from "./components/elements";
 import {
@@ -12,7 +12,7 @@ import {
 } from "./components/containers";
 import "./App.css";
 
-class App extends Component {
+class App extends React.PureComponent {
   render() {
     return (
       <Router >

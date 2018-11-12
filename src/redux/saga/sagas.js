@@ -1,8 +1,14 @@
 import { call, put, all, fork, takeEvery } from "redux-saga/effects"
 import constants from "../../utils/constants"
-import { fetchArticle, failToFetchArticleList, fetchUserArticles, fetchArticleComment } from "../action/article"
+import {
+  fetchArticle,
+  failToFetchArticleList,
+  fetchUserArticles,
+  fetchArticleComment,
+} from "../action/article"
 import { fetchTags } from "../action/tag"
-import { saveUserInfo, failToFetchUserInfo } from "../action/user"
+import { saveUserInfo, failToFetchUserInfo, getUserFavoritedArticlesList } from "../action/user"
+import { fetchAuthorProfile, getFavoritedArticlesList } from "../action/author"
 import {
   getArticleList,
   getListTags,
@@ -10,12 +16,20 @@ import {
   filterArticlesByTag,
   updateUserInfo,
   addNewArticle,
-  filterByAuthor,
   updateArticle,
   deleteUserArticle,
   articleComment,
   addComment,
-  deleteComment
+  deleteComment,
+  getAuthorProfile,
+  followAuthor,
+  unfollowAuthor,
+  likeArticle,
+  unlikeArticle,
+  getUserFeed,
+  favoriteArticles,
+  filterByAuthor,
+  pagination
 } from "../../services"
 import {
   FILTER_BY_TAG,
@@ -23,7 +37,11 @@ import {
   UPDATE_USER_INFO,
   ADD_USERNAME_TO_FETCH,
   DELETE_ARTICLE,
-  UPDATE_COMMENT
+  UPDATE_COMMENT,
+  REFETCH_AUTHOR_BY_ACTION,
+  LIKE_UNLIKE_ARTICLE,
+  REFETCH_FAVORITED_ARTICLES,
+  CHANGE_PAGE
 } from "../action/actionTypes";
 
 function getUserTokenFromLocalStore() {
@@ -97,9 +115,11 @@ function* deleteArticle(action) {
 }
 
 function* fetchUserArticleList(action) {
-  const { username } = action;
-  const articles = yield call(filterByAuthor, username);
-  yield put(fetchUserArticles(articles.articles))
+  const { token } = action;
+  if (token) {
+    const articles = yield call(getUserFeed, token);
+    yield put(fetchUserArticles(articles.articles))
+  }
 }
 
 function* fetchListComment(comments) {
@@ -130,7 +150,62 @@ function* fetchComment(action) {
     comments = yield call(articleComment, articleId);
     yield put(fetchArticleComment(comments.comments));
   }
+}
 
+function* fetchAuthor(action) {
+  const { authorName, token, key } = action;
+  if (token === undefined) {
+    const author = yield call(getAuthorProfile, authorName);
+    yield put(fetchAuthorProfile(author.profile));
+  } else {
+    if (key === "follow") {
+      const follow = yield call(followAuthor, authorName, token);
+      if (follow.profile) {
+        yield put({ type: ADD_USERNAME_TO_FETCH, token });
+      }
+    } else if (key === "unfollow") {
+      const unfollow = yield call(unfollowAuthor, authorName, token);
+      if (unfollow.profile) {
+        yield put({ type: ADD_USERNAME_TO_FETCH, token });
+      }
+    }
+  }
+}
+
+function* fetchFavoritedArticles(action) {
+  const { username, key } = action;
+  if (key === "favoriteArticles") {
+    const articles = yield call(favoriteArticles, username);
+    yield put(getFavoritedArticlesList(articles.articles));
+  } else if (key === "myArticles") {
+    const articles = yield call(filterByAuthor, username);
+    yield put(getFavoritedArticlesList(articles.articles))
+  }
+}
+
+function* likeAndUnlikeArticle(action) {
+  const { articleId, token, key } = action;
+  if (key === "like") {
+    const like = yield call(likeArticle, articleId, token);
+    if (like.article) {
+      yield all([fork(listArticles), fork(listTags)]);
+    }
+  } else if (key === "unlike") {
+    const unlike = yield call(unlikeArticle, articleId, token);
+    if (unlike.article) {
+      yield all([fork(listArticles), fork(listTags)]);
+    }
+  }
+}
+
+function* changePage(action) {
+  const { itemPerPage, offset } = action;
+  const articles = yield call(pagination, itemPerPage, offset);
+  if (articles.articles.length === 0) {
+    yield fork(listArticles);
+  } else {
+    yield put(fetchArticle(articles))
+  }
 }
 
 function* mySaga() {
@@ -143,7 +218,11 @@ function* mySaga() {
     takeEvery(UPDATE_ARTICLE, updateUserArticle),
     takeEvery(ADD_USERNAME_TO_FETCH, fetchUserArticleList),
     takeEvery(DELETE_ARTICLE, deleteArticle),
-    takeEvery(UPDATE_COMMENT, fetchComment)
+    takeEvery(UPDATE_COMMENT, fetchComment),
+    takeEvery(REFETCH_AUTHOR_BY_ACTION, fetchAuthor),
+    takeEvery(LIKE_UNLIKE_ARTICLE, likeAndUnlikeArticle),
+    takeEvery(REFETCH_FAVORITED_ARTICLES, fetchFavoritedArticles),
+    takeEvery(CHANGE_PAGE, changePage)
   ])
 };
 

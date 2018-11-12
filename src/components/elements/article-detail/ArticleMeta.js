@@ -1,5 +1,6 @@
 import React from "react";
 import moment from "moment";
+import _ from "lodash";
 import CustomLink from "../CustomLink";
 
 export default ({
@@ -11,8 +12,28 @@ export default ({
   userInfo,
   articleId,
   deleteArticle,
-  isShow = false
+  isShow = false,
+  followingAuthors,
+  token,
+  refetchAuthorProfileWithAction
 }) => {
+
+  let isFollowing = false;
+  followingAuthors && !_.isEmpty(followingAuthors) && followingAuthors.filter(item => {
+    if (ownerName === item.authorName) {
+      isFollowing = true
+    }
+  });
+
+  function handleFollowAuthor(e, authorName, isFollowing) {
+    e.preventDefault();
+    if (isFollowing) {
+      refetchAuthorProfileWithAction(authorName, token, "unfollow");
+    } else {
+      refetchAuthorProfileWithAction(authorName, token, "follow");
+    }
+  }
+
   const date = moment(createdDate).format("MM-DD-YYYY");
   return (
     <div className="article-meta">
@@ -43,9 +64,9 @@ export default ({
         </span>
       ) : (
           <span>
-            <button className="btn btn-sm btn-outline-secondary">
+            <button className="btn btn-sm btn-outline-secondary" onClick={(e) => handleFollowAuthor(e, ownerName, isFollowing)}>
               <i className="ion-plus-round"></i>
-              &nbsp;Follow {ownerName} <span className="counter">{favoriteCount}</span>
+              &nbsp;{isFollowing ? `Unfollow ${ownerName}` : `Follow ${ownerName}`} <span className="counter">{favoriteCount}</span>
             </button>
             &nbsp; &nbsp;
             <button className="btn btn-sm btn-outline-primary">
