@@ -27,6 +27,7 @@ class SignUpPage extends React.Component {
       if (data.errors) {
         this.setState({
           errors: data.errors,
+          isLoading: false,
         });
       } else if (data.user) {
         this.setState(
