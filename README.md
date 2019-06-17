@@ -33,7 +33,7 @@ Check if any eslint error.
 
 ### `npm run lint:fix`
 
-Fix some eslint error that pluggin is able to fix, otherwise, fix it by hand.
+Fix some eslint error that plugin is able to fix, otherwise, fix it by hand.
 
 ## Learn More
 
