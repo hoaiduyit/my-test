@@ -1,16 +1,16 @@
-import React from "react";
-import { signIn } from "../../services"
-import { CustomInput, ErrorItem, CustomLink } from "../elements"
-import constants from "../../utils/constants";
+import React from 'react';
+import { signIn } from '../../services';
+import { CustomInput, ErrorItem, CustomLink } from '../elements';
+import constants from '../../utils/constants';
 
 export default class LoginPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       errors: {},
-      isLoading: false
+      isLoading: false,
     };
     this.changeText = this.changeText.bind(this);
     this.login = this.login.bind(this);
@@ -20,7 +20,7 @@ export default class LoginPage extends React.Component {
   login() {
     const { email, password } = this.state;
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
     signIn(email, password).then(data => {
       if (data.errors) {
@@ -28,14 +28,20 @@ export default class LoginPage extends React.Component {
           errors: data.errors,
         });
       } else if (data.user) {
-        this.setState({
-          errors: {},
-        }, () => {
-          localStorage.setItem(constants.USER_TOKEN, JSON.stringify(data.user.token));
-          window.location.replace("/");
-        })
+        this.setState(
+          {
+            errors: {},
+          },
+          () => {
+            localStorage.setItem(
+              constants.USER_TOKEN,
+              JSON.stringify(data.user.token)
+            );
+            window.location.replace('/');
+          }
+        );
       }
-    })
+    });
   }
 
   onEnter(e) {
@@ -47,8 +53,8 @@ export default class LoginPage extends React.Component {
 
   changeText(e, keyChange) {
     this.setState({
-      [keyChange]: e.target.value
-    })
+      [keyChange]: e.target.value,
+    });
   }
 
   render() {
@@ -70,7 +76,7 @@ export default class LoginPage extends React.Component {
                     className="form-control form-control-lg"
                     value={this.state.email}
                     placeholder="Email"
-                    onChange={(e) => this.changeText(e, "email")}
+                    onChange={e => this.changeText(e, 'email')}
                     onKeyUp={this.onEnter}
                   />
                 </fieldset>
@@ -81,19 +87,21 @@ export default class LoginPage extends React.Component {
                     type="password"
                     value={this.state.password}
                     placeholder="Password"
-                    onChange={(e) => this.changeText(e, "password")}
+                    onChange={e => this.changeText(e, 'password')}
                     onKeyUp={this.onEnter}
                   />
                 </fieldset>
-
               </form>
-              <button className="btn btn-lg btn-primary pull-xs-right" onClick={this.login}>
+              <button
+                className="btn btn-lg btn-primary pull-xs-right"
+                onClick={this.login}
+              >
                 Sign in
               </button>
             </div>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }

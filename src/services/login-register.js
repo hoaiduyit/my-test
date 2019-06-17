@@ -1,17 +1,17 @@
 export function signUp(username, email, password) {
-  const register = fetch("https://conduit.productionready.io/api/users", {
-    credentials: "same-origin",
-    method: "POST",
+  const register = fetch('https://conduit.productionready.io/api/users', {
+    credentials: 'same-origin',
+    method: 'POST',
     headers: {
-      "Content-type": "application/json; charset=utf-8"
+      'Content-type': 'application/json; charset=utf-8',
     },
     body: JSON.stringify({
       user: {
         username,
         email,
-        password
-      }
-    })
+        password,
+      },
+    }),
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -22,18 +22,18 @@ export function signUp(username, email, password) {
 }
 
 export function signIn(email, password) {
-  const login = fetch("https://conduit.productionready.io/api/users/login", {
-    credentials: "same-origin",
-    method: "POST",
+  const login = fetch('https://conduit.productionready.io/api/users/login', {
+    credentials: 'same-origin',
+    method: 'POST',
     headers: {
-      "Content-type": "application/json; charset=utf-8"
+      'Content-type': 'application/json; charset=utf-8',
     },
     body: JSON.stringify({
       user: {
         email,
-        password
-      }
-    })
+        password,
+      },
+    }),
   }).then(res => {
     return res.json();
   }).then(data => {

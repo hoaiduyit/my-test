@@ -1,15 +1,14 @@
-import React from "react";
-import { connectAutoDispatch } from "../hoc/connectAutoDispatch"
-import CustomLink from "./CustomLink"
+import React from 'react';
+import { connectAutoDispatch } from '../hoc/connectAutoDispatch';
+import CustomLink from './CustomLink';
 
 @connectAutoDispatch(state => {
   return {
     isLogin: state.userInfo && state.userInfo.isLogin,
-    user: state.userInfo && state.userInfo.user
-  }
+    user: state.userInfo && state.userInfo.user,
+  };
 }, {})
 class NavBar extends React.Component {
-
   render() {
     return (
       <nav className="navbar navbar-light">
@@ -22,36 +21,60 @@ class NavBar extends React.Component {
             {this.props.isLogin && (
               <span className="nav-item">
                 <li className="nav-item">
-                  <CustomLink url="/add-article" className="nav-link" children={<span><i className="ion-compose" />&nbsp;New Post</span>} />
+                  <CustomLink
+                    url="/add-article"
+                    className="nav-link"
+                    children={
+                      <span>
+                        <i className="ion-compose" />
+                        &nbsp;New Post
+                      </span>
+                    }
+                  />
                 </li>
                 <li className="nav-item">
-                  <CustomLink url="/user-profile" className="nav-link" children={<span><i className="ion-gear-a"></i>&nbsp;Settings</span>} />
+                  <CustomLink
+                    url="/user-profile"
+                    className="nav-link"
+                    children={
+                      <span>
+                        <i className="ion-gear-a" />&nbsp;Settings
+                      </span>
+                    }
+                  />
                 </li>
               </span>
-
             )}
             {!this.props.isLogin ? (
               <span className="nav-item">
                 <li className="nav-item">
-                  <CustomLink url="/login" className="nav-link" children="Sign in" />
+                  <CustomLink
+                    url="/login"
+                    className="nav-link"
+                    children="Sign in"
+                  />
                 </li>
                 <li className="nav-item">
-                  <CustomLink url="/register" className="nav-link" children="Sign up" />
+                  <CustomLink
+                    url="/register"
+                    className="nav-link"
+                    children="Sign up"
+                  />
                 </li>
               </span>
             ) : (
-                <li className="nav-item">
-                  <CustomLink
-                    url={`/profile/${this.props.user.username}`}
-                    className="nav-link"
-                    children={this.props.user.email}
-                  />
-                </li>
-              )}
+              <li className="nav-item">
+                <CustomLink
+                  url={`/profile/${this.props.user.username}`}
+                  className="nav-link"
+                  children={this.props.user.email}
+                />
+              </li>
+            )}
           </ul>
         </div>
       </nav>
-    )
+    );
   }
 }
 

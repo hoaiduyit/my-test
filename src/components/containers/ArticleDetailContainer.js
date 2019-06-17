@@ -1,6 +1,6 @@
-import React from "react";
-import { ArticleDetailPage } from "../pages"
+import React from 'react';
+import { ArticleDetailPage } from '../pages';
 
-export default (props) => {
-  return <ArticleDetailPage {...props} />
-}
+export default props => {
+  return <ArticleDetailPage {...props} />;
+};

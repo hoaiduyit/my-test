@@ -1,9 +1,17 @@
-import React from "react";
-import moment from "moment"
-import CustomLink from "../CustomLink"
+import React from 'react';
+import moment from 'moment';
+import CustomLink from '../CustomLink';
 
-export default ({ commentId, name, image, comment, createdDate, user, handleDeleteComment }) => {
-  const formatDate = moment(createdDate).format("MM-DD-YYYY");
+export default ({
+  commentId,
+  name,
+  image,
+  comment,
+  createdDate,
+  user,
+  handleDeleteComment,
+}) => {
+  const formatDate = moment(createdDate).format('MM-DD-YYYY');
   return (
     <div className="card">
       <div className="card-block">
@@ -23,11 +31,14 @@ export default ({ commentId, name, image, comment, createdDate, user, handleDele
         />
         <span className="date-posted">{formatDate}</span>
         {user && user.username === name && (
-          <span className="mod-options" onClick={(e) => handleDeleteComment(e, commentId)}>
-            <i className="ion-trash-a"></i>
+          <span
+            className="mod-options"
+            onClick={e => handleDeleteComment(e, commentId)}
+          >
+            <i className="ion-trash-a" />
           </span>
         )}
       </div>
     </div>
-  )
-}
+  );
+};

@@ -1,6 +1,14 @@
-import React from "react";
+import React from 'react';
 
-export default ({ type = "text", className, placeholder, value, onChange, onKeyUp = null, readOnly = false }) => {
+export default ({
+  type = 'text',
+  className,
+  placeholder,
+  value,
+  onChange,
+  onKeyUp = null,
+  readOnly = false,
+}) => {
   return (
     <input
       className={className}
@@ -11,5 +19,5 @@ export default ({ type = "text", className, placeholder, value, onChange, onKeyU
       onKeyUp={onKeyUp}
       readOnly={readOnly}
     />
-  )
-}
+  );
+};

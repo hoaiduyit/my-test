@@ -13,11 +13,11 @@ import {
   deleteComment,
   likeArticle,
   unlikeArticle,
-  pagination
-} from "./articles";
-import { getListTags, filterArticlesByTag } from "./tags";
-import { signUp, signIn } from "./login-register"
-import { getUserInfo, updateUserInfo, followAuthor, unfollowAuthor } from "./user"
+  pagination,
+} from './articles';
+import { getListTags, filterArticlesByTag } from './tags';
+import { signUp, signIn } from './login-register'
+import { getUserInfo, updateUserInfo, followAuthor, unfollowAuthor } from './user'
 
 export {
   getArticleList,
@@ -42,5 +42,5 @@ export {
   unfollowAuthor,
   likeArticle,
   unlikeArticle,
-  pagination
+  pagination,
 }

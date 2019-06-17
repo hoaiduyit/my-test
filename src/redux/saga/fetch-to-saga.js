@@ -1,4 +1,4 @@
-import { call, put } from 'redux-saga/effects';
+import { call, put, all, fork, takeEvery } from 'redux-saga/effects';
 import constants from '../../utils/constants';
 import {
   fetchArticle,
@@ -24,7 +24,6 @@ import {
   filterByAuthor,
 } from '../../services';
 import {
-  FILTER_BY_TAG,
   ADD_USERNAME_TO_FETCH,
   UPDATE_COMMENT,
   REFETCH_AUTHOR_BY_ACTION,
@@ -127,7 +126,6 @@ function* fetchToSaga() {
     fork(listArticles),
     fork(listTags),
     fork(userInfoAfterLogin),
-    takeEvery(FILTER_BY_TAG, filterArticles),
     takeEvery(ADD_USERNAME_TO_FETCH, fetchUserArticleList),
     takeEvery(UPDATE_COMMENT, fetchComment),
     takeEvery(REFETCH_AUTHOR_BY_ACTION, fetchAuthor),

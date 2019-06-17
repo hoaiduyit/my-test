@@ -1,8 +1,8 @@
-import _ from "lodash";
+import _ from 'lodash';
 
 function scrollToTop(scrollDuration) {
   const isIE = false || !!document.documentMode;
-  if (typeof performance === "undefined") return;
+  if (typeof performance === 'undefined') return;
   const cosParameter = window.scrollY / 2;
   let scrollCount = 0,
     oldTimestamp = performance.now();
@@ -18,8 +18,8 @@ function scrollToTop(scrollDuration) {
 }
 
 function removeDuplicateElement(myArray) {
-  let array = [];
-  let follwingAuthors = [];
+  const array = [];
+  const follwingAuthors = [];
   const removeDup = myArray.filter(item => {
     if (array.indexOf(item.author.username) === -1) {
       array.push(item.author.username);

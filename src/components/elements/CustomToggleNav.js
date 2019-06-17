@@ -1,34 +1,37 @@
-import React from "react";
+import React from 'react';
 
 export default ({
   isShow = true,
-  tagName = "",
+  tagName = '',
   active,
   toggleKey_1,
   toggleKey_2,
   toggleText_1,
   toggleText_2,
-  onClick
+  onClick,
 }) => {
   return (
     <ul className="nav nav-pills outline-active">
       {isShow && (
-        <li style={{ cursor: "pointer" }} className="nav-item">
+        <li style={{ cursor: 'pointer' }} className="nav-item">
           <span
             onClick={() => onClick(toggleKey_1)}
-            className={`nav-link ${active === toggleKey_1 ? "active" : ""}`}
+            className={`nav-link ${active === toggleKey_1 ? 'active' : ''}`}
           >
             {toggleText_1}
           </span>
         </li>
       )}
-      <li style={{ cursor: "pointer" }} className="nav-item">
+      <li style={{ cursor: 'pointer' }} className="nav-item">
         <span
           onClick={() => onClick(toggleKey_2)}
-          className={`nav-link ${active === toggleKey_2 || !isShow ? "active" : ""}`}>
-          {tagName !== "" ? tagName : toggleText_2}
+          className={`nav-link ${
+            active === toggleKey_2 || !isShow ? 'active' : ''
+          }`}
+        >
+          {tagName !== '' ? tagName : toggleText_2}
         </span>
       </li>
     </ul>
-  )
-}
+  );
+};

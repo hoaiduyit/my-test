@@ -1,9 +1,9 @@
 export function getListTags() {
-  const tags = fetch("https://conduit.productionready.io/api/tags", {
-    method: "GET",
+  const tags = fetch('https://conduit.productionready.io/api/tags', {
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -15,10 +15,10 @@ export function getListTags() {
 
 export function filterArticlesByTag(tagName) {
   const articles = fetch(`https://conduit.productionready.io/api/articles?tag=${tagName}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {

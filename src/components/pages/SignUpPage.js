@@ -1,17 +1,17 @@
-import React from "react";
-import { signUp } from "../../services"
-import { CustomInput, ErrorItem, CustomLink } from "../elements"
-import constants from "../../utils/constants";
+import React from 'react';
+import { signUp } from '../../services';
+import { CustomInput, ErrorItem, CustomLink } from '../elements';
+import constants from '../../utils/constants';
 
 class SignUpPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
-      email: "",
-      password: "",
+      username: '',
+      email: '',
+      password: '',
       errors: {},
-      isLoading: false
+      isLoading: false,
     };
     this.changeText = this.changeText.bind(this);
     this.register = this.register.bind(this);
@@ -21,22 +21,28 @@ class SignUpPage extends React.Component {
   register() {
     const { username, email, password } = this.state;
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
     signUp(username, email, password).then(data => {
       if (data.errors) {
         this.setState({
-          errors: data.errors
+          errors: data.errors,
         });
       } else if (data.user) {
-        this.setState({
-          errors: {}
-        }, () => {
-          localStorage.setItem(constants.USER_TOKEN, JSON.stringify(data.user.token));
-          window.location.replace("/");
-        })
+        this.setState(
+          {
+            errors: {},
+          },
+          () => {
+            localStorage.setItem(
+              constants.USER_TOKEN,
+              JSON.stringify(data.user.token)
+            );
+            window.location.replace('/');
+          }
+        );
       }
-    })
+    });
   }
 
   onEnter(e) {
@@ -48,8 +54,8 @@ class SignUpPage extends React.Component {
 
   changeText(e, keyChange) {
     this.setState({
-      [keyChange]: e.target.value
-    })
+      [keyChange]: e.target.value,
+    });
   }
 
   render() {
@@ -71,7 +77,7 @@ class SignUpPage extends React.Component {
                     className="form-control form-control-lg"
                     value={this.state.username}
                     placeholder="Your Name"
-                    onChange={(e) => this.changeText(e, "username")}
+                    onChange={e => this.changeText(e, 'username')}
                     onKeyUp={this.onEnter}
                   />
                 </fieldset>
@@ -81,7 +87,7 @@ class SignUpPage extends React.Component {
                     className="form-control form-control-lg"
                     value={this.state.email}
                     placeholder="Email"
-                    onChange={(e) => this.changeText(e, "email")}
+                    onChange={e => this.changeText(e, 'email')}
                     onKeyUp={this.onEnter}
                   />
                 </fieldset>
@@ -92,21 +98,23 @@ class SignUpPage extends React.Component {
                     type="password"
                     value={this.state.password}
                     placeholder="Password"
-                    onChange={(e) => this.changeText(e, "password")}
+                    onChange={e => this.changeText(e, 'password')}
                     onKeyUp={this.onEnter}
                   />
                 </fieldset>
-
               </form>
-              <button className="btn btn-lg btn-primary pull-xs-right" onClick={this.register}>
+              <button
+                className="btn btn-lg btn-primary pull-xs-right"
+                onClick={this.register}
+              >
                 Sign up
               </button>
             </div>
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default SignUpPage
+export default SignUpPage;

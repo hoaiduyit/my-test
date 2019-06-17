@@ -1,6 +1,6 @@
-import React from "react";
-import { HomePage } from "../pages"
+import React from 'react';
+import { HomePage } from '../pages';
 
-export default (props) => {
-  return <HomePage {...props} />
-}
+export default props => {
+  return <HomePage {...props} />;
+};

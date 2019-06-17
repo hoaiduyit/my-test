@@ -1,3 +1,3 @@
-import { connectAutoDispatch } from "./connectAutoDispatch";
+import { connectAutoDispatch } from './connectAutoDispatch';
 
 export { connectAutoDispatch };

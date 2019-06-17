@@ -1,16 +1,19 @@
-import { FETCH_AUTHOR_PROFILE, FETCH_FAVORITED_ARTICLES } from "../action/actionTypes";
+import {
+  FETCH_AUTHOR_PROFILE,
+  FETCH_FAVORITED_ARTICLES,
+} from '../action/actionTypes';
 
 const initialState = {
   authorProfile: {},
-  favoritedArticles: []
-}
+  favoritedArticles: [],
+};
 
 export default function authorInfo(state = initialState, action) {
   switch (action.type) {
     case FETCH_AUTHOR_PROFILE:
-      return getAuthorProfile(state, action.authorProfile)
+      return getAuthorProfile(state, action.authorProfile);
     case FETCH_FAVORITED_ARTICLES:
-      return getFavoritedArticlesList(state, action.favoritedArticles)
+      return getFavoritedArticlesList(state, action.favoritedArticles);
     default:
       return state;
   }
@@ -19,13 +22,13 @@ export default function authorInfo(state = initialState, action) {
 function getAuthorProfile(state, payload) {
   return {
     ...state,
-    authorProfile: payload
-  }
+    authorProfile: payload,
+  };
 }
 
 function getFavoritedArticlesList(state, payload) {
   return {
     ...state,
-    favoritedArticles: payload
-  }
+    favoritedArticles: payload,
+  };
 }

@@ -1,21 +1,26 @@
-import { FETCH_ARTICLES, FAIL_TO_FETCH_ARTICLE, FETCH_USER_ARTICLE, FETCH_COMMENTS } from "../action/actionTypes";
+import {
+  FETCH_ARTICLES,
+  FAIL_TO_FETCH_ARTICLE,
+  FETCH_USER_ARTICLE,
+  FETCH_COMMENTS,
+} from '../action/actionTypes';
 
 const initialState = {
   articles: {},
   userArticles: {},
-  comments: {}
-}
+  comments: {},
+};
 
 export default function articles(state = initialState, action) {
   switch (action.type) {
     case FETCH_ARTICLES:
-      return getListArticles(state, action.articles)
+      return getListArticles(state, action.articles);
     case FAIL_TO_FETCH_ARTICLE:
-      return failToFetch(state, action.errors)
+      return failToFetch(state, action.errors);
     case FETCH_USER_ARTICLE:
-      return getUserArticleList(state, action.userArticles)
+      return getUserArticleList(state, action.userArticles);
     case FETCH_COMMENTS:
-      return getArticleComments(state, action.comments)
+      return getArticleComments(state, action.comments);
     default:
       return state;
   }
@@ -24,29 +29,29 @@ export default function articles(state = initialState, action) {
 function getListArticles(state, payload) {
   return {
     ...state,
-    articles: payload
-  }
+    articles: payload,
+  };
 }
 
 function getUserArticleList(state, payload) {
   return {
     ...state,
-    userArticles: payload
-  }
+    userArticles: payload,
+  };
 }
 
 function getArticleComments(state, payload) {
   return {
     ...state,
-    comments: payload
-  }
+    comments: payload,
+  };
 }
 
 function failToFetch(state, payload) {
   if (payload) {
     return {
       ...state,
-      errors: payload
-    }
+      errors: payload,
+    };
   }
 }

@@ -1,9 +1,9 @@
 export function getArticleList() {
-  const articles = fetch("https://conduit.productionready.io/api/articles", {
-    method: "GET",
+  const articles = fetch('https://conduit.productionready.io/api/articles', {
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -15,10 +15,10 @@ export function getArticleList() {
 
 export function getAuthorProfile(author) {
   const profile = fetch(`https://conduit.productionready.io/api/profiles/${author}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -30,10 +30,10 @@ export function getAuthorProfile(author) {
 
 export function filterByAuthor(author) {
   const articles = fetch(`https://conduit.productionready.io/api/articles?author=${author}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -45,10 +45,10 @@ export function filterByAuthor(author) {
 
 export function favoriteArticles(favorites) {
   const articles = fetch(`https://conduit.productionready.io/api/articles?favorited=${favorites}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -60,10 +60,10 @@ export function favoriteArticles(favorites) {
 
 export function articleDetail(articleId) {
   const detail = fetch(`https://conduit.productionready.io/api/articles/${articleId}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -75,17 +75,17 @@ export function articleDetail(articleId) {
 
 export function addComment(articleId, body, token) {
   const comment = fetch(`https://conduit.productionready.io/api/articles/${articleId}/comments`, {
-    credentials: "same-origin",
-    method: "POST",
+    credentials: 'same-origin',
+    method: 'POST',
     headers: {
-      "Authorization": `Token ${token}`,
-      "Content-Type": "application/json; charset=utf-8"
+      Authorization: `Token ${token}`,
+      'Content-Type': 'application/json; charset=utf-8',
     },
     body: JSON.stringify({
       comment: {
-        body
-      }
-    })
+        body,
+      },
+    }),
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -97,10 +97,10 @@ export function addComment(articleId, body, token) {
 
 export function articleComment(articleId) {
   const comment = fetch(`https://conduit.productionready.io/api/articles/${articleId}/comments`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -112,11 +112,11 @@ export function articleComment(articleId) {
 
 export function deleteComment(articleId, token, commentId) {
   const comment = fetch(`https://conduit.productionready.io/api/articles/${articleId}/comments/${commentId}`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      "Authorization": `Token ${token}`,
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      Authorization: `Token ${token}`,
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -127,21 +127,21 @@ export function deleteComment(articleId, token, commentId) {
 }
 
 export function addNewArticle(title, description, body, tagList, token) {
-  const article = fetch(`https://conduit.productionready.io/api/articles`, {
-    credentials: "same-origin",
-    method: "POST",
+  const article = fetch('https://conduit.productionready.io/api/articles', {
+    credentials: 'same-origin',
+    method: 'POST',
     headers: {
-      "Authorization": `Token ${token}`,
-      "Content-Type": "application/json; charset=utf-8"
+      Authorization: `Token ${token}`,
+      'Content-Type': 'application/json; charset=utf-8',
     },
     body: JSON.stringify({
       article: {
         title,
         description,
         body,
-        tagList
-      }
-    })
+        tagList,
+      },
+    }),
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -153,20 +153,20 @@ export function addNewArticle(title, description, body, tagList, token) {
 
 export function updateArticle(title, description, body, tagList, token, articleId) {
   const article = fetch(`https://conduit.productionready.io/api/articles/${articleId}`, {
-    credentials: "same-origin",
-    method: "PUT",
+    credentials: 'same-origin',
+    method: 'PUT',
     headers: {
-      "Authorization": `Token ${token}`,
-      "Content-Type": "application/json; charset=utf-8"
+      Authorization: `Token ${token}`,
+      'Content-Type': 'application/json; charset=utf-8',
     },
     body: JSON.stringify({
       article: {
         title,
         description,
         body,
-        tagList
-      }
-    })
+        tagList,
+      },
+    }),
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -178,12 +178,12 @@ export function updateArticle(title, description, body, tagList, token, articleI
 
 export function deleteUserArticle(token, articleId) {
   const article = fetch(`https://conduit.productionready.io/api/articles/${articleId}`, {
-    credentials: "same-origin",
-    method: "DELETE",
+    credentials: 'same-origin',
+    method: 'DELETE',
     headers: {
-      "Authorization": `Token ${token}`,
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      Authorization: `Token ${token}`,
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -194,12 +194,12 @@ export function deleteUserArticle(token, articleId) {
 }
 
 export function getUserFeed(token) {
-  const articles = fetch("https://conduit.productionready.io/api/articles/feed", {
-    method: "GET",
+  const articles = fetch('https://conduit.productionready.io/api/articles/feed', {
+    method: 'GET',
     headers: {
-      "Authorization": `Token ${token}`,
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      Authorization: `Token ${token}`,
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -211,11 +211,11 @@ export function getUserFeed(token) {
 
 export function likeArticle(articleId, token) {
   const article = fetch(`https://conduit.productionready.io/api/articles/${articleId}/favorite`, {
-    method: "POST",
+    method: 'POST',
     headers: {
-      "Authorization": `Token ${token}`,
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      Authorization: `Token ${token}`,
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -227,11 +227,11 @@ export function likeArticle(articleId, token) {
 
 export function unlikeArticle(articleId, token) {
   const article = fetch(`https://conduit.productionready.io/api/articles/${articleId}/favorite`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      "Authorization": `Token ${token}`,
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      Authorization: `Token ${token}`,
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
@@ -243,10 +243,10 @@ export function unlikeArticle(articleId, token) {
 
 export function pagination(itemPerPage, offset) {
   const articles = fetch(`https://conduit.productionready.io/api/articles?limit=${itemPerPage}&offset=${offset}`, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json; charset=utf-8"
-    }
+      'Content-Type': 'application/json; charset=utf-8',
+    },
   }).then(res => {
     return res.json();
   }).then(data => {
