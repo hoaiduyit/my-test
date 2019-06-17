@@ -118,7 +118,6 @@ function* changePage(action) {
 
 function* updateToSaga() {
   yield all([
-    fork(userInfoAfterLogin),
     takeEvery(FILTER_BY_TAG, filterArticles),
     takeEvery(UPDATE_USER_INFO, updateUserSaga),
     takeEvery(UPDATE_ARTICLE, updateUserArticle),
