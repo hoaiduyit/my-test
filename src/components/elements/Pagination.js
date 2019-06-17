@@ -21,7 +21,7 @@ export default class Pagination extends React.Component {
     numberOfItem: this.props.numberOfItem,
   };
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps) {
     if (nextProps) {
       return {
         currentPage: nextProps.currentPage,
@@ -37,10 +37,9 @@ export default class Pagination extends React.Component {
       pagin.push(
         <li
           className={`page-item ng-scope ${
-            currentPage === i + 1 ? 'active' : ''
-          }`}
+            currentPage === i + 1 ? 'active' : ''}`}
           key={i}
-          onClick={e => this.props.changePage(i + 1)}
+          onClick={() => this.props.changePage(i + 1)}
         >
           <CustomLink
             url={`?limit=${itemPerPage}&offset=${i * itemPerPage}`}

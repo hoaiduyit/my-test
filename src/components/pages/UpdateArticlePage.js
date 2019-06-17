@@ -30,7 +30,7 @@ class UpdateArticlePage extends React.Component {
     this.updateArticle = this.updateArticle.bind(this);
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps) {
     if (nextProps.errors) {
       return {
         errors: nextProps.errors,

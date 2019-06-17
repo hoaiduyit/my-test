@@ -14,7 +14,6 @@ export default ({
   tagList = [],
   token,
   actionOnArticle,
-  favoritedArticles,
 }) => {
   const { image, username } = author;
   const convertedDate = moment(createAt).format('MM-DD-YYYY');
@@ -50,8 +49,7 @@ export default ({
       </div>
       <button
         className={`btn btn-outline-primary btn-sm pull-xs-right ${
-          favorited && token ? 'active' : ''
-        }`}
+          favorited && token ? 'active' : ''}`}
         onClick={e => handleLikeArticle(e, articleId, favorited)}
       >
         <i className="ion-heart" /> {likeCount}
