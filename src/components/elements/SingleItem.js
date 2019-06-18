@@ -14,6 +14,7 @@ export default ({
   tagList = [],
   token,
   actionOnArticle,
+  history,
 }) => {
   const { image, username } = author;
   const convertedDate = moment(createAt).format('MM-DD-YYYY');
@@ -27,7 +28,7 @@ export default ({
         actionOnArticle(articleId, token, 'like');
       }
     } else {
-      window.location.replace('/login');
+      history.push('/login');
     }
   }
 

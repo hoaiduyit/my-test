@@ -94,7 +94,15 @@ function* fetchAuthor(action) {
   const { authorName, token, key } = action;
   if (token === undefined) {
     const author = yield call(getAuthorProfile, authorName);
-    yield put(fetchAuthorProfile(author.profile));
+    if (author) {
+      if (!author.error) {
+        yield put(fetchAuthorProfile(author.profile));
+      } else {
+        yield put(fetchAuthorProfile({}));
+      }
+    } else {
+      yield put(fetchAuthorProfile({}));
+    }
   } else {
     if (key === 'follow') {
       const follow = yield call(followAuthor, authorName, token);

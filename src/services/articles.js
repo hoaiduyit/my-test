@@ -7,10 +7,10 @@ export function getArticleList() {
   }).then(res => {
     return res.json();
   }).then(data => {
-    return data
+    return data;
   });
 
-  return articles
+  return articles;
 }
 
 export function getAuthorProfile(author) {
@@ -25,7 +25,7 @@ export function getAuthorProfile(author) {
     return data;
   });
 
-  return profile
+  return profile;
 }
 
 export function filterByAuthor(author) {
@@ -40,7 +40,7 @@ export function filterByAuthor(author) {
     return data;
   });
 
-  return articles
+  return articles;
 }
 
 export function favoriteArticles(favorites) {
@@ -55,7 +55,7 @@ export function favoriteArticles(favorites) {
     return data;
   });
 
-  return articles
+  return articles;
 }
 
 export function articleDetail(articleId) {
@@ -92,7 +92,7 @@ export function addComment(articleId, body, token) {
     return data;
   })
 
-  return comment
+  return comment;
 }
 
 export function articleComment(articleId) {
@@ -148,7 +148,7 @@ export function addNewArticle(title, description, body, tagList, token) {
     return data;
   })
 
-  return article
+  return article;
 }
 
 export function updateArticle(title, description, body, tagList, token, articleId) {
@@ -190,7 +190,7 @@ export function deleteUserArticle(token, articleId) {
     return data;
   })
 
-  return article
+  return article;
 }
 
 export function getUserFeed(token) {
@@ -253,5 +253,5 @@ export function pagination(itemPerPage, offset) {
     return data;
   })
 
-  return articles
+  return articles;
 }

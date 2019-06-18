@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { connectAutoDispatch } from '../hoc';
-import { refetchAuthorProfileWithAction } from '../../redux/action/author';
+import { refetchAuthorProfileWithAction, fetchAuthorProfile } from '../../redux/action/author';
 import {
   getFollowingAuthorsList,
   fetchFavoritedArticles,
@@ -32,6 +32,7 @@ import { removeDuplicateElement } from '../../utils';
     getFollowingAuthorsList,
     addUsernameToFetch,
     fetchFavoritedArticles,
+    fetchAuthorProfile,
   }
 )
 class PersonalPage extends React.Component {
@@ -40,60 +41,89 @@ class PersonalPage extends React.Component {
     this.state = {
       active: 'myArticles',
       username: props.match.params.username,
+      loading: true,
+      profileEmpty: true,
     };
     this.changeActiveNav = this.changeActiveNav.bind(this);
     this.handleFollowAuthor = this.handleFollowAuthor.bind(this);
   }
 
-  mounted = false;
-
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.token && this.props.token !== prevProps.token) {
-      this.props.addUsernameToFetch(this.props.token);
-      this.props.fetchFavoritedArticles(this.state.username, 'myArticles');
+    const {
+      token,
+      addUsernameToFetch,
+      fetchFavoritedArticles,
+      refetchAuthorProfileWithAction,
+      userArticles,
+      getFollowingAuthorsList,
+    } = this.props;
+    const { username } = this.state;
+
+    if (token && token !== prevProps.token) {
+      addUsernameToFetch(token);
+      fetchFavoritedArticles(username, 'myArticles');
     }
-    if (this.state.username !== prevState.username) {
-      this.props.refetchAuthorProfileWithAction(this.state.username);
+    if (username !== prevState.username) {
+      refetchAuthorProfileWithAction(username);
     }
-    if (this.props.userArticles !== prevProps.userArticles) {
-      this.props.getFollowingAuthorsList(
-        removeDuplicateElement(this.props.userArticles)
+    if (userArticles !== prevProps.userArticles) {
+      getFollowingAuthorsList(
+        removeDuplicateElement(userArticles)
       );
     }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+    const { match, authorProfile } = nextProps;
     if (
-      nextProps.match &&
-      nextProps.match.params.username &&
-      nextProps.match.params.username !== prevState.username
+      match &&
+      match.params.username &&
+      match.params.username !== prevState.username
     ) {
       return {
-        username: nextProps.match.params.username,
+        username: match.params.username,
       };
+    }
+    if (!authorProfile) {
+      return {
+        loading: false,
+      }
+    }
+    if (!_.isEmpty(authorProfile)) {
+      return {
+        loading: false,
+        profileEmpty: false,
+      }
     }
     return null;
   }
 
   componentDidMount() {
-    this.mounted = true;
-    if (this.state.username) {
-      this.props.refetchAuthorProfileWithAction(this.state.username);
-      this.props.fetchFavoritedArticles(this.state.username, 'myArticles');
+    const { username } = this.state;
+    const { refetchAuthorProfileWithAction, fetchFavoritedArticles } = this.props;
+    if (username) {
+      refetchAuthorProfileWithAction(username);
+      fetchFavoritedArticles(username, 'myArticles');
     }
   }
 
+  componentWillUnmount() {
+    this.props.fetchAuthorProfile({});
+  }
+
   changeActiveNav(key) {
+    const { fetchFavoritedArticles } = this.props;
     this.setState(
       {
         active: key,
       },
       () => {
-        if (this.state.active === 'myArticles') {
-          this.props.fetchFavoritedArticles(this.state.username, 'myArticles');
+        const { active, username } = this.state;
+        if (active === 'myArticles') {
+          fetchFavoritedArticles(username, 'myArticles');
         } else {
-          this.props.fetchFavoritedArticles(
-            this.state.username,
+          fetchFavoritedArticles(
+            username,
             'favoriteArticles'
           );
         }
@@ -103,16 +133,17 @@ class PersonalPage extends React.Component {
 
   handleFollowAuthor(e, authorName, isFollowing) {
     e.preventDefault();
+    const { refetchAuthorProfileWithAction, token } = this.props;
     if (isFollowing) {
-      this.props.refetchAuthorProfileWithAction(
+      refetchAuthorProfileWithAction(
         authorName,
-        this.props.token,
+        token,
         'unfollow'
       );
     } else {
-      this.props.refetchAuthorProfileWithAction(
+      refetchAuthorProfileWithAction(
         authorName,
-        this.props.token,
+        token,
         'follow'
       );
     }
@@ -124,8 +155,12 @@ class PersonalPage extends React.Component {
       followingAuthors,
       favoritedArticles,
       userInfo,
+      token,
+      actionOnArticle,
+      fetchFavoritedArticles,
     } = this.props;
-    if (!this.mounted) return <div className="loading" />;
+    const { loading, profileEmpty, active } = this.state;
+    if (loading && profileEmpty) return <div className="loading" />;
 
     return (
       <div className="profile-page">
@@ -149,12 +184,12 @@ class PersonalPage extends React.Component {
               <div className="articles-toggle">
                 <CustomToggleNav
                   onClick={this.changeActiveNav}
-                  active={this.state.active}
+                  active={active}
                   toggleKey_1="myArticles"
                   toggleKey_2="favoriteArticles"
                   toggleText_1={
                     !_.isEmpty(userInfo) &&
-                    userInfo.username === authorProfile.username
+                      userInfo.username === authorProfile.username
                       ? 'My Articles'
                       : `${authorProfile.username} Articles`
                   }
@@ -174,9 +209,9 @@ class PersonalPage extends React.Component {
                       title={item.title}
                       description={item.description}
                       tagList={item.tagList}
-                      token={this.props.token}
-                      actionOnArticle={this.props.actionOnArticle}
-                      fetchFavoritedArticles={this.props.fetchFavoritedArticles}
+                      token={token}
+                      actionOnArticle={actionOnArticle}
+                      fetchFavoritedArticles={fetchFavoritedArticles}
                     />
                   );
                 })}

@@ -44,103 +44,99 @@ class HomePage extends React.Component {
       isLogin: props.isLogin,
       tagName: '',
       active: !props.isLogin ? 'globalFeed' : 'myFeed',
-      userArticles: props.userArticles,
       currentPage: 1,
     };
     this.changeActiveNav = this.changeActiveNav.bind(this);
     this.handleChangePage = this.handleChangePage.bind(this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.token && this.props.token !== prevProps.token) {
-      this.props.addUsernameToFetch(this.props.token);
+  componentDidMount() {
+    if (this.props.location.search) {
+      const tagName = this.props.location.search.split('?tag=')[1];
+      const pagin = this.props.location.search.split('?limit=10&offset=')[1];
+
+      this.changeTagNameAndFilter(tagName, true);
+      this.handleChangePage(getPageFromUrl(pagin));
     }
-    if (this.props.location !== prevProps.location) {
-      if (_.isEmpty(this.props.location.search)) {
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      token,
+      addUsernameToFetch,
+      location,
+      userArticles,
+      getFollowingAuthorsList,
+      filterByTag,
+    } = this.props;
+    const tagName = location.search.split('?tag=')[1];
+    const pagin = location.search.split('?limit=10&offset=')[1];
+
+    if (token && token !== prevProps.token) {
+      addUsernameToFetch(token);
+    }
+    if (location !== prevProps.location) {
+      if (_.isEmpty(location.search)) {
         this.changeTagNameAndFilter('');
         this.handleChangePage(1);
       } else {
-        this.changeTagNameAndFilter(
-          this.props.location.search.split('?tag=')[1]
-        );
-        this.handleChangePage(
-          getPageFromUrl(
-            this.props.location.search.split('?limit=10&offset=')[1]
-          )
-        );
+        if (tagName) {
+          this.changeTagNameAndFilter(tagName);
+          filterByTag(tagName);
+        }
+        if (pagin) {
+          this.handleChangePage(getPageFromUrl(pagin));
+        }
       }
     }
     if (
-      this.state.userArticles &&
-      !_.isEmpty(this.state.userArticles) &&
-      this.state.userArticles !== prevState.userArticles
+      userArticles &&
+      !_.isEmpty(userArticles) &&
+      userArticles !== prevProps.userArticles
     ) {
-      this.props.getFollowingAuthorsList(
-        removeDuplicateElement(this.state.userArticles)
-      );
+      getFollowingAuthorsList(removeDuplicateElement(userArticles));
     }
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps && nextProps.userArticles !== prevState.userArticles) {
-      return {
-        userArticles: nextProps.userArticles,
-      };
-    }
-    return null;
-  }
-
-  changeTagNameAndFilter(tagName) {
-    this.setState(
-      {
-        tagName,
-      },
-      () => this.props.filterByTag(tagName)
-    );
-  }
-
-  componentDidMount() {
-    if (this.props.location.search) {
-      this.changeTagNameAndFilter(this.props.location.search.split('?tag=')[1]);
-      this.handleChangePage(
-        getPageFromUrl(this.props.location.search.split('?limit=10&offset=')[1])
-      );
-    }
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.props !== nextProps || this.state !== nextState;
+  changeTagNameAndFilter(tagName, isRollBack) {
+    this.setState({
+      tagName,
+      active: isRollBack ? 'globalFeed' : tagName,
+    });
   }
 
   changeActiveNav(keyChange) {
+    const { token, addUsernameToFetch, filterByTag } = this.props;
     this.setState(
       {
         active: keyChange,
       },
       () => {
-        if (this.state.active === 'myFeed') {
-          this.props.addUsernameToFetch(this.props.token);
+        switch (keyChange) {
+          case 'myFeed':
+            addUsernameToFetch(token);
+            break;
+          case 'globalFeed':
+            filterByTag('');
+            break;
+          default:
+            filterByTag(keyChange);
+            break;
         }
       }
     );
   }
 
   handleChangePage(page) {
-    this.setState(
-      {
-        currentPage: page,
-      },
-      () => {
-        setTimeout(() => {
-          this.props.changePage(10, page * 10 - 10);
-        }, 100);
-      }
-    );
+    this.setState({ currentPage: page }, () => {
+      setTimeout(() => {
+        this.props.changePage(10, page * 10 - 10);
+      }, 100);
+    });
   }
 
   render() {
-    const { articles, tags } = this.props;
-    const { userArticles } = this.state;
+    const { articles, tags, history, userArticles } = this.props;
 
     return (
       <div className="home-page">
@@ -165,7 +161,7 @@ class HomePage extends React.Component {
                   toggleText_2="Global Feed"
                 />
               </div>
-              {this.state.active === 'myFeed' &&
+              {this.state.active === 'myFeed' ?
                 !_.isEmpty(userArticles) &&
                 userArticles.map(item => {
                   return (
@@ -181,28 +177,30 @@ class HomePage extends React.Component {
                         favorited={item.favorited}
                         token={this.props.token}
                         actionOnArticle={this.props.actionOnArticle}
+                        history={history}
                       />
                     </span>
                   );
-                })}
-              {this.state.active === 'globalFeed' &&
-                !_.isEmpty(articles) &&
-                articles.articles &&
-                articles.articles.map(item => {
-                  return (
-                    <SingleItem
-                      key={item.slug}
-                      articleId={item.slug}
-                      author={item.author}
-                      createAt={item.createdAt}
-                      likeCount={item.favoritesCount}
-                      title={item.title}
-                      description={item.description}
-                      token={this.props.token}
-                      actionOnArticle={this.props.actionOnArticle}
-                    />
-                  );
-                })}
+                }) : (
+                  !_.isEmpty(articles) &&
+                  articles.articles &&
+                  articles.articles.map(item => {
+                    return (
+                      <SingleItem
+                        key={item.slug}
+                        articleId={item.slug}
+                        author={item.author}
+                        createAt={item.createdAt}
+                        likeCount={item.favoritesCount}
+                        title={item.title}
+                        description={item.description}
+                        token={this.props.token}
+                        actionOnArticle={this.props.actionOnArticle}
+                        history={history}
+                      />
+                    );
+                  })
+                )}
 
               <Pagination
                 currentPage={this.state.currentPage}

@@ -39,7 +39,7 @@ class SignUpPage extends React.Component {
               constants.USER_TOKEN,
               JSON.stringify(data.user.token)
             );
-            window.location.replace('/');
+            this.props.history.push('/');
           }
         );
       }

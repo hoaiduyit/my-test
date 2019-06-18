@@ -26,12 +26,22 @@ export default ({
         <span
           onClick={() => onClick(toggleKey_2)}
           className={`nav-link ${
-            active === toggleKey_2 || !isShow ? 'active' : ''
-          }`}
+            active === toggleKey_2 ? 'active' : ''}`}
         >
-          {tagName !== '' ? tagName : toggleText_2}
+          {toggleText_2}
         </span>
       </li>
-    </ul>
+      {tagName !== '' && (
+        <li style={{ cursor: 'pointer' }} className="nav-item">
+          <span
+            onClick={() => onClick(tagName)}
+            className={`nav-link ${
+              active === tagName && active !== 'globalFeed' ? 'active' : ''}`}
+          >
+            {tagName}
+          </span>
+        </li>
+      )}
+    </ul >
   );
 };
