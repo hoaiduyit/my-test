@@ -23,9 +23,9 @@ function removeDuplicateElement(myArray) {
   const removeDup = myArray.filter(item => {
     if (array.indexOf(item.author.username) === -1) {
       array.push(item.author.username);
-      return true
+      return true;
     }
-    return false
+    return false;
   })
   !_.isEmpty(removeDup) && removeDup.map(item => {
     follwingAuthors.push({ authorName: item.author.username, following: true });
@@ -35,7 +35,7 @@ function removeDuplicateElement(myArray) {
 
 function getPageFromUrl(page) {
   if (page) {
-    return (parseInt(page, 10) / 10) + 1
+    return (parseInt(page, 10) / 10) + 1;
   }
   return 1;
 }

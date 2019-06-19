@@ -41,7 +41,6 @@ class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLogin: props.isLogin,
       tagName: '',
       active: !props.isLogin ? 'globalFeed' : 'myFeed',
       currentPage: 1,
@@ -80,13 +79,9 @@ class HomePage extends React.Component {
         this.changeTagNameAndFilter('');
         this.handleChangePage(1);
       } else {
-        if (tagName) {
-          this.changeTagNameAndFilter(tagName);
-          filterByTag(tagName);
-        }
-        if (pagin) {
-          this.handleChangePage(getPageFromUrl(pagin));
-        }
+        this.changeTagNameAndFilter(tagName);
+        this.handleChangePage(getPageFromUrl(pagin));
+        tagName && filterByTag(tagName);
       }
     }
     if (
@@ -98,6 +93,10 @@ class HomePage extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.filterByTag('');
+  }
+
   changeTagNameAndFilter(tagName, isRollBack) {
     this.setState({
       tagName,
@@ -107,36 +106,55 @@ class HomePage extends React.Component {
 
   changeActiveNav(keyChange) {
     const { token, addUsernameToFetch, filterByTag } = this.props;
-    this.setState(
-      {
-        active: keyChange,
-      },
-      () => {
-        switch (keyChange) {
-          case 'myFeed':
-            addUsernameToFetch(token);
-            break;
-          case 'globalFeed':
-            filterByTag('');
-            break;
-          default:
-            filterByTag(keyChange);
-            break;
-        }
-      }
-    );
+    this.setState({ active: keyChange });
+    switch (keyChange) {
+      case 'myFeed':
+        addUsernameToFetch(token);
+        break;
+      case 'globalFeed':
+        filterByTag('');
+        break;
+      default:
+        filterByTag(keyChange);
+        break;
+    }
   }
 
   handleChangePage(page) {
-    this.setState({ currentPage: page }, () => {
-      setTimeout(() => {
-        this.props.changePage(10, page * 10 - 10);
-      }, 100);
-    });
+    if (page) {
+      this.setState({ currentPage: page });
+      this.props.changePage(10, page * 10 - 10);
+    }
+  }
+
+  renderArticlesList(articles) {
+    const { history, token, actionOnArticle } = this.props;
+
+    if (!_.isEmpty(articles)) {
+      return articles.map(item => {
+        return (
+          <SingleItem
+            key={item.slug}
+            articleId={item.slug}
+            author={item.author}
+            createAt={item.createdAt}
+            likeCount={item.favoritesCount}
+            title={item.title}
+            description={item.description}
+            favorited={item.favorited}
+            token={token}
+            actionOnArticle={actionOnArticle}
+            history={history}
+          />
+        );
+      });
+    }
+    return <span>Empty</span>
   }
 
   render() {
-    const { articles, tags, history, userArticles } = this.props;
+    const { articles, tags, userArticles, isLogin } = this.props;
+    const { active, tagName, currentPage } = this.state;
 
     return (
       <div className="home-page">
@@ -152,58 +170,21 @@ class HomePage extends React.Component {
               <div className="feed-toggle">
                 <CustomToggleNav
                   onClick={this.changeActiveNav}
-                  isShow={this.props.isLogin}
-                  active={this.state.active}
-                  tagName={this.state.tagName}
+                  isShow={isLogin}
+                  active={active}
+                  tagName={tagName}
                   toggleKey_1="myFeed"
                   toggleText_1="My Feed"
                   toggleKey_2="globalFeed"
                   toggleText_2="Global Feed"
                 />
               </div>
-              {this.state.active === 'myFeed' ?
-                !_.isEmpty(userArticles) &&
-                userArticles.map(item => {
-                  return (
-                    <span>
-                      <SingleItem
-                        key={item.slug}
-                        articleId={item.slug}
-                        author={item.author}
-                        createAt={item.createdAt}
-                        likeCount={item.favoritesCount}
-                        title={item.title}
-                        description={item.description}
-                        favorited={item.favorited}
-                        token={this.props.token}
-                        actionOnArticle={this.props.actionOnArticle}
-                        history={history}
-                      />
-                    </span>
-                  );
-                }) : (
-                  !_.isEmpty(articles) &&
-                  articles.articles &&
-                  articles.articles.map(item => {
-                    return (
-                      <SingleItem
-                        key={item.slug}
-                        articleId={item.slug}
-                        author={item.author}
-                        createAt={item.createdAt}
-                        likeCount={item.favoritesCount}
-                        title={item.title}
-                        description={item.description}
-                        token={this.props.token}
-                        actionOnArticle={this.props.actionOnArticle}
-                        history={history}
-                      />
-                    );
-                  })
-                )}
+              {active === 'myFeed' ? this.renderArticlesList(userArticles) : (
+                !_.isEmpty(articles) && this.renderArticlesList(articles.articles)
+              )}
 
               <Pagination
-                currentPage={this.state.currentPage}
+                currentPage={currentPage}
                 numberOfItem={articles && articles.articlesCount}
                 changePage={this.handleChangePage}
               />
@@ -217,13 +198,12 @@ class HomePage extends React.Component {
                     tags.tags &&
                     tags.tags.map((item, index) => {
                       return (
-                        <span key={`tag_${index}`}>
-                          <CustomLink
-                            url={`?tag=${item}`}
-                            className="tag-pill tag-default"
-                            children={item}
-                          />
-                        </span>
+                        <CustomLink
+                          key={`tag_${index}`}
+                          url={`?tag=${item}`}
+                          className="tag-pill tag-default"
+                          children={item}
+                        />
                       );
                     })}
                 </div>
