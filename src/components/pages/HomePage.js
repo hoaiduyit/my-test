@@ -149,7 +149,7 @@ class HomePage extends React.Component {
         );
       });
     }
-    return <span>Empty</span>
+    return <span>Empty</span>;
   }
 
   render() {
@@ -179,9 +179,10 @@ class HomePage extends React.Component {
                   toggleText_2="Global Feed"
                 />
               </div>
-              {active === 'myFeed' ? this.renderArticlesList(userArticles) : (
-                !_.isEmpty(articles) && this.renderArticlesList(articles.articles)
-              )}
+              {active === 'myFeed'
+                ? this.renderArticlesList(userArticles)
+                : !_.isEmpty(articles) &&
+                  this.renderArticlesList(articles.articles)}
 
               <Pagination
                 currentPage={currentPage}

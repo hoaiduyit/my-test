@@ -25,8 +25,7 @@ export default ({
       <li style={{ cursor: 'pointer' }} className="nav-item">
         <span
           onClick={() => onClick(toggleKey_2)}
-          className={`nav-link ${
-            active === toggleKey_2 ? 'active' : ''}`}
+          className={`nav-link ${active === toggleKey_2 ? 'active' : ''}`}
         >
           {toggleText_2}
         </span>
@@ -36,12 +35,13 @@ export default ({
           <span
             onClick={() => onClick(tagName)}
             className={`nav-link ${
-              active === tagName && active !== 'globalFeed' ? 'active' : ''}`}
+              active === tagName && active !== 'globalFeed' ? 'active' : ''
+            }`}
           >
             {tagName}
           </span>
         </li>
       )}
-    </ul >
+    </ul>
   );
 };

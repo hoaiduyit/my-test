@@ -37,7 +37,8 @@ export default class Pagination extends React.Component {
       pagin.push(
         <li
           className={`page-item ng-scope ${
-            currentPage === i + 1 ? 'active' : ''}`}
+            currentPage === i + 1 ? 'active' : ''
+          }`}
           key={i}
           onClick={() => this.props.changePage(i + 1)}
         >

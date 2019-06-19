@@ -16,8 +16,13 @@ import {
   pagination,
 } from './articles';
 import { getListTags, filterArticlesByTag } from './tags';
-import { signUp, signIn } from './login-register'
-import { getUserInfo, updateUserInfo, followAuthor, unfollowAuthor } from './user'
+import { signUp, signIn } from './login-register';
+import {
+  getUserInfo,
+  updateUserInfo,
+  followAuthor,
+  unfollowAuthor,
+} from './user';
 
 export {
   getArticleList,
@@ -43,4 +48,4 @@ export {
   likeArticle,
   unlikeArticle,
   pagination,
-}
+};

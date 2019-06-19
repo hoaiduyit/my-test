@@ -38,7 +38,8 @@ class NavBar extends React.Component {
                     className="nav-link"
                     children={
                       <span>
-                        <i className="ion-gear-a" />&nbsp;Settings
+                        <i className="ion-gear-a" />
+                        &nbsp;Settings
                       </span>
                     }
                   />

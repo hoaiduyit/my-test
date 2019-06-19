@@ -208,13 +208,13 @@ class ArticleDetailPage extends React.Component {
                     postCommentAction={this.postComment}
                   />
                 </span>
-              )
-                : (
-                  <p style={{ display: 'inherit' }}>
-                    <CustomLink url="/login" children="Sign in" /> or{' '}
-                    <CustomLink url="/register" children="Sign up" /> to add comments on this article.
-                  </p>
-                )}
+              ) : (
+                <p style={{ display: 'inherit' }}>
+                  <CustomLink url="/login" children="Sign in" /> or{' '}
+                  <CustomLink url="/register" children="Sign up" /> to add
+                  comments on this article.
+                </p>
+              )}
               {!_.isEmpty(comments) &&
                 comments.map(item => {
                   return (

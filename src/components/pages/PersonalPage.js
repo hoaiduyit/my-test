@@ -1,7 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
 import { connectAutoDispatch } from '../hoc';
-import { refetchAuthorProfileWithAction, fetchAuthorProfile } from '../../redux/action/author';
+import {
+  refetchAuthorProfileWithAction,
+  fetchAuthorProfile,
+} from '../../redux/action/author';
 import {
   getFollowingAuthorsList,
   fetchFavoritedArticles,
@@ -67,9 +70,7 @@ class PersonalPage extends React.Component {
       refetchAuthorProfileWithAction(username);
     }
     if (userArticles !== prevProps.userArticles) {
-      getFollowingAuthorsList(
-        removeDuplicateElement(userArticles)
-      );
+      getFollowingAuthorsList(removeDuplicateElement(userArticles));
     }
   }
 
@@ -87,20 +88,23 @@ class PersonalPage extends React.Component {
     if (!authorProfile) {
       return {
         loading: false,
-      }
+      };
     }
     if (!_.isEmpty(authorProfile)) {
       return {
         loading: false,
         profileEmpty: false,
-      }
+      };
     }
     return null;
   }
 
   componentDidMount() {
     const { username } = this.state;
-    const { refetchAuthorProfileWithAction, fetchFavoritedArticles } = this.props;
+    const {
+      refetchAuthorProfileWithAction,
+      fetchFavoritedArticles,
+    } = this.props;
     if (username) {
       refetchAuthorProfileWithAction(username);
       fetchFavoritedArticles(username, 'myArticles');
@@ -122,10 +126,7 @@ class PersonalPage extends React.Component {
         if (active === 'myArticles') {
           fetchFavoritedArticles(username, 'myArticles');
         } else {
-          fetchFavoritedArticles(
-            username,
-            'favoriteArticles'
-          );
+          fetchFavoritedArticles(username, 'favoriteArticles');
         }
       }
     );
@@ -135,17 +136,9 @@ class PersonalPage extends React.Component {
     e.preventDefault();
     const { refetchAuthorProfileWithAction, token } = this.props;
     if (isFollowing) {
-      refetchAuthorProfileWithAction(
-        authorName,
-        token,
-        'unfollow'
-      );
+      refetchAuthorProfileWithAction(authorName, token, 'unfollow');
     } else {
-      refetchAuthorProfileWithAction(
-        authorName,
-        token,
-        'follow'
-      );
+      refetchAuthorProfileWithAction(authorName, token, 'follow');
     }
   }
 
@@ -189,7 +182,7 @@ class PersonalPage extends React.Component {
                   toggleKey_2="favoriteArticles"
                   toggleText_1={
                     !_.isEmpty(userInfo) &&
-                      userInfo.username === authorProfile.username
+                    userInfo.username === authorProfile.username
                       ? 'My Articles'
                       : `${authorProfile.username} Articles`
                   }

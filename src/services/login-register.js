@@ -12,11 +12,13 @@ export function signUp(username, email, password) {
         password,
       },
     }),
-  }).then(res => {
-    return res.json();
-  }).then(data => {
-    return data;
   })
+    .then(res => {
+      return res.json();
+    })
+    .then(data => {
+      return data;
+    });
 
   return register;
 }
@@ -34,11 +36,13 @@ export function signIn(email, password) {
         password,
       },
     }),
-  }).then(res => {
-    return res.json();
-  }).then(data => {
-    return data;
   })
+    .then(res => {
+      return res.json();
+    })
+    .then(data => {
+      return data;
+    });
 
   return login;
 }

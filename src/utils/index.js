@@ -10,7 +10,10 @@ function scrollToTop(scrollDuration) {
     scrollCount += Math.PI / (scrollDuration / (newTimestamp - oldTimestamp));
     if (scrollCount >= Math.PI) window.scrollTo(0, 0);
     if (window.scrollY === 0) return;
-    window.scrollTo(0, Math.round(cosParameter + cosParameter * Math.cos(scrollCount)));
+    window.scrollTo(
+      0,
+      Math.round(cosParameter + cosParameter * Math.cos(scrollCount))
+    );
     oldTimestamp = newTimestamp;
     !isIE && window.requestAnimationFrame(step);
   }
@@ -26,18 +29,22 @@ function removeDuplicateElement(myArray) {
       return true;
     }
     return false;
-  })
-  !_.isEmpty(removeDup) && removeDup.map(item => {
-    follwingAuthors.push({ authorName: item.author.username, following: true });
-  })
+  });
+  !_.isEmpty(removeDup) &&
+    removeDup.map(item => {
+      follwingAuthors.push({
+        authorName: item.author.username,
+        following: true,
+      });
+    });
   return follwingAuthors;
 }
 
 function getPageFromUrl(page) {
   if (page) {
-    return (parseInt(page, 10) / 10) + 1;
+    return parseInt(page, 10) / 10 + 1;
   }
   return 1;
 }
 
-export { scrollToTop, removeDuplicateElement, getPageFromUrl }
+export { scrollToTop, removeDuplicateElement, getPageFromUrl };
