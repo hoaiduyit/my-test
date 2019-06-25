@@ -47,4 +47,42 @@ function getPageFromUrl(page) {
   return 1;
 }
 
-export { scrollToTop, removeDuplicateElement, getPageFromUrl };
+function getPager(totalItems, currentPage = 1, itemPerPage = 10) {
+  const totalPages = Math.ceil(totalItems / itemPerPage);
+  let startPage, endPage;
+  if (totalPages <= 10) {
+    startPage = 1;
+    endPage = totalPages;
+  } else {
+    if (currentPage <= 6) {
+      startPage = 1;
+      endPage = 10;
+    } else if (currentPage + 4 >= totalPages) {
+      startPage = totalPages - 9;
+      endPage = totalPages;
+    } else {
+      startPage = currentPage - 5;
+      endPage = currentPage + 4;
+    }
+  }
+
+  const startIndex = (currentPage - 1) * itemPerPage;
+  const endIndex = Math.min(startIndex + itemPerPage - 1, totalItems - 1);
+  const pages = [...Array(endPage + 1 - startPage).keys()].map(
+    i => startPage + i
+  );
+
+  return {
+    totalItems,
+    currentPage,
+    itemPerPage,
+    totalPages,
+    startPage,
+    endPage,
+    startIndex,
+    endIndex,
+    pages,
+  };
+}
+
+export { scrollToTop, removeDuplicateElement, getPageFromUrl, getPager };
