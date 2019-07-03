@@ -45,11 +45,14 @@ class ArticleDetailPage extends React.Component {
     this.state = {
       id: props.match.params.articleId,
       article: props.article ? props.article.article : {},
-      comments: props.comments ? props.comments.comments : [],
+      comments:
+        props.comments && !_.isEmpty(props.comments)
+          ? props.comments.comments
+          : [],
       text: '',
       comment: {},
       errors: {},
-      isLoading: false,
+      isLoading: true,
     };
     this.onChangeText = this.onChangeText.bind(this);
     this.postComment = this.postComment.bind(this);
@@ -71,10 +74,7 @@ class ArticleDetailPage extends React.Component {
     });
   }
 
-  mounted = false;
-
   componentDidMount() {
-    this.mounted = true;
     this.props.updateComment(this.state.id);
     this.fetchDataFromApi(
       this.props.match.params.articleId,
@@ -83,18 +83,31 @@ class ArticleDetailPage extends React.Component {
     );
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.comments !== prevProps.comments) {
-      this.setState({
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { comments, errors } = nextProps;
+    if (
+      (comments && comments.length) !==
+      (prevState.comments && prevState.comments.length)
+    ) {
+      return {
         text: '',
         isLoading: false,
-      });
+      };
     }
-    if (this.props.errors !== prevProps.errors) {
-      this.setState({
+    if (errors && errors.length !== prevState.errors.length) {
+      return {
         isLoading: false,
-      });
+      };
     }
+    if (!_.isEmpty(prevState.article)) {
+      return {
+        isLoading: false,
+      };
+    }
+    return null;
+  }
+
+  componentDidUpdate(prevProps) {
     if (this.props.token && this.props.token !== prevProps.token) {
       this.props.addUsernameToFetch(this.props.token);
     }
@@ -103,6 +116,10 @@ class ArticleDetailPage extends React.Component {
         removeDuplicateElement(this.props.userArticles)
       );
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps !== this.props || nextState !== this.state;
   }
 
   postComment(e) {
@@ -140,18 +157,13 @@ class ArticleDetailPage extends React.Component {
     }, 1000);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return nextProps !== this.props || nextState !== this.state;
-  }
-
   render() {
-    const { article } = this.state;
+    const { article, isLoading } = this.state;
     const { comments, errors, followingAuthors } = this.props;
-    if (!this.mounted) return <div className="loading" />;
+    if (isLoading) return <div className="loading" />;
 
     return (
       <div className="article-page">
-        {this.state.isLoading && <div className="loading" />}
         <div className="banner">
           <div className="container">
             <h1>{article.title}</h1>

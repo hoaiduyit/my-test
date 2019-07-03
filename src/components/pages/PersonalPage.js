@@ -60,7 +60,7 @@ class PersonalPage extends React.Component {
       userArticles,
       getFollowingAuthorsList,
     } = this.props;
-    const { username } = this.state;
+    const { username, active } = this.state;
 
     if (token && token !== prevProps.token) {
       addUsernameToFetch(token);
@@ -68,6 +68,9 @@ class PersonalPage extends React.Component {
     }
     if (username !== prevState.username) {
       refetchAuthorProfileWithAction(username);
+      active === 'favoriteArticles'
+        ? fetchFavoritedArticles(username, 'favoriteArticles')
+        : fetchFavoritedArticles(username, 'myArticles');
     }
     if (userArticles !== prevProps.userArticles) {
       getFollowingAuthorsList(removeDuplicateElement(userArticles));

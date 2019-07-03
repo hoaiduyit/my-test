@@ -17,7 +17,7 @@ export function getListTags() {
 
 export function filterArticlesByTag(tagName) {
   const articles = fetch(
-    `https://conduit.productionready.io/api/articles?tag=${tagName}`,
+    `https://conduit.productionready.io/api/articles?limit=10&tag=${tagName}`,
     {
       method: 'GET',
       headers: {

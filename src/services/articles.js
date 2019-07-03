@@ -1,10 +1,13 @@
 export function getArticleList() {
-  const articles = fetch('https://conduit.productionready.io/api/articles', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-    },
-  })
+  const articles = fetch(
+    'https://conduit.productionready.io/api/articles?limit=10&offset=10',
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+      },
+    }
+  )
     .then(res => {
       return res.json();
     })
@@ -312,9 +315,14 @@ export function unlikeArticle(articleId, token) {
   return article;
 }
 
-export function pagination(itemPerPage, offset) {
+export function pagination(itemPerPage, offset, activeKey) {
+  const tagName =
+    (activeKey === 'globalFeed') | (activeKey === 'myFeed')
+      ? ''
+      : `&tag=${activeKey}`;
+
   const articles = fetch(
-    `https://conduit.productionready.io/api/articles?limit=${itemPerPage}&offset=${offset}`,
+    `https://conduit.productionready.io/api/articles?limit=${itemPerPage}&offset=${offset}${tagName}`,
     {
       method: 'GET',
       headers: {

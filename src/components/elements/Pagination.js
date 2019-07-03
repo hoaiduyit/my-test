@@ -1,27 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import CustomLink from './CustomLink';
 import { getPager } from '../../utils';
 
-const NumPage = ({
-  page,
-  currentPage,
-  itemPerPage,
-  handleChangePage,
-  name,
-}) => {
+const NumPage = ({ page, currentPage, handleChangePage, name, isNumPage }) => {
+  const paginCondition =
+    (currentPage === page) | (currentPage === 1 && page === 1);
   return (
     <li
       className={`page-item ng-scope ${
-        currentPage - 1 === page ? 'active' : ''
+        isNumPage && paginCondition ? 'active' : ''
       }`}
-      onClick={() => handleChangePage(page)}
+      onClick={() => (paginCondition ? '' : handleChangePage(page))}
     >
-      <CustomLink
-        url={`?limit=${itemPerPage}&offset=${page * itemPerPage}`}
-        className="page-link ng-binding"
-        children={name}
-      />
+      <span style={{ cursor: 'pointer' }} className="page-link ng-binding">
+        {name}
+      </span>
     </li>
   );
 };
@@ -70,8 +63,7 @@ export default class Pagination extends React.Component {
       <>
         <NumPage
           page={1}
-          currentPage={1}
-          itemPerPage={itemPerPage}
+          currentPage={currentPage}
           handleChangePage={changePage}
           name="First"
         />
@@ -80,17 +72,16 @@ export default class Pagination extends React.Component {
             <NumPage
               page={item}
               currentPage={currentPage}
-              itemPerPage={itemPerPage}
               handleChangePage={changePage}
               name={item}
               key={item}
+              isNumPage
             />
           );
         })}
         <NumPage
           page={totalPages}
-          currentPage={totalPages}
-          itemPerPage={itemPerPage}
+          currentPage={currentPage}
           handleChangePage={changePage}
           name="Last"
         />

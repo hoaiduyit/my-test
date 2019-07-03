@@ -8,7 +8,7 @@ import {
 const initialState = {
   articles: {},
   userArticles: {},
-  comments: {},
+  comments: [],
 };
 
 export default function articles(state = initialState, action) {

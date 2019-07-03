@@ -8,13 +8,8 @@ import {
   changePage,
 } from '../../redux/action/article';
 import { getFollowingAuthorsList } from '../../redux/action/user';
-import {
-  SingleItem,
-  CustomLink,
-  CustomToggleNav,
-  Pagination,
-} from '../elements';
-import { removeDuplicateElement, getPageFromUrl } from '../../utils';
+import { SingleItem, CustomToggleNav, Pagination } from '../elements';
+import { removeDuplicateElement } from '../../utils';
 
 @connectAutoDispatch(
   state => {
@@ -49,40 +44,16 @@ class HomePage extends React.Component {
     this.handleChangePage = this.handleChangePage.bind(this);
   }
 
-  componentDidMount() {
-    if (this.props.location.search) {
-      const tagName = this.props.location.search.split('?tag=')[1];
-      const pagin = this.props.location.search.split('?limit=10&offset=')[1];
-
-      this.changeTagNameAndFilter(tagName, true);
-      this.handleChangePage(getPageFromUrl(pagin));
-    }
-  }
-
   componentDidUpdate(prevProps) {
     const {
       token,
       addUsernameToFetch,
-      location,
       userArticles,
       getFollowingAuthorsList,
-      filterByTag,
     } = this.props;
-    const tagName = location.search.split('?tag=')[1];
-    const pagin = location.search.split('?limit=10&offset=')[1];
 
     if (token && token !== prevProps.token) {
       addUsernameToFetch(token);
-    }
-    if (location !== prevProps.location) {
-      if (_.isEmpty(location.search)) {
-        this.changeTagNameAndFilter('');
-        this.handleChangePage(1);
-      } else {
-        this.changeTagNameAndFilter(tagName);
-        this.handleChangePage(getPageFromUrl(pagin));
-        tagName && filterByTag(tagName);
-      }
     }
     if (
       userArticles &&
@@ -93,14 +64,13 @@ class HomePage extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    this.props.filterByTag('');
-  }
-
-  changeTagNameAndFilter(tagName, isRollBack) {
+  changeTagNameAndFilter(tagName) {
+    const { filterByTag } = this.props;
+    filterByTag(tagName);
     this.setState({
       tagName,
-      active: isRollBack ? 'globalFeed' : tagName,
+      active: tagName,
+      currentPage: 1,
     });
   }
 
@@ -121,9 +91,11 @@ class HomePage extends React.Component {
   }
 
   handleChangePage(page) {
+    const { active } = this.state;
+    const itemPerPage = 10;
     if (page) {
       this.setState({ currentPage: page });
-      this.props.changePage(10, page * 10 - 10);
+      this.props.changePage(itemPerPage, page * itemPerPage - 10, active);
     }
   }
 
@@ -183,12 +155,13 @@ class HomePage extends React.Component {
                 ? this.renderArticlesList(userArticles)
                 : !_.isEmpty(articles) &&
                   this.renderArticlesList(articles.articles)}
-
-              <Pagination
-                currentPage={currentPage}
-                numberOfItem={articles && articles.articlesCount}
-                changePage={this.handleChangePage}
-              />
+              {articles && articles.articlesCount && (
+                <Pagination
+                  currentPage={currentPage}
+                  numberOfItem={articles.articlesCount}
+                  changePage={this.handleChangePage}
+                />
+              )}
             </div>
 
             <div className="col-md-3">
@@ -197,14 +170,16 @@ class HomePage extends React.Component {
                 <div className="tag-list">
                   {!_.isEmpty(tags) &&
                     tags.tags &&
-                    tags.tags.map((item, index) => {
+                    tags.tags.map(item => {
                       return (
-                        <CustomLink
-                          key={`tag_${index}`}
-                          url={`?tag=${item}`}
+                        <span
+                          style={{ cursor: 'pointer' }}
                           className="tag-pill tag-default"
-                          children={item}
-                        />
+                          key={`tag_${item}`}
+                          onClick={() => this.changeTagNameAndFilter(item)}
+                        >
+                          {item}
+                        </span>
                       );
                     })}
                 </div>

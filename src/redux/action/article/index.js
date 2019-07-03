@@ -58,8 +58,9 @@ export const actionOnArticle = (articleId, token, key, username) => ({
   username,
 });
 
-export const changePage = (itemPerPage, offset) => ({
+export const changePage = (itemPerPage, offset, activeKey) => ({
   type: types.CHANGE_PAGE,
   itemPerPage,
   offset,
+  activeKey,
 });

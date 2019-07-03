@@ -107,8 +107,8 @@ function* likeAndUnlikeArticle(action) {
 }
 
 function* changePage(action) {
-  const { itemPerPage, offset } = action;
-  const articles = yield call(pagination, itemPerPage, offset);
+  const { itemPerPage, offset, activeKey } = action;
+  const articles = yield call(pagination, itemPerPage, offset, activeKey);
   if (articles.articles.length === 0) {
     yield fork(listArticles);
   } else {

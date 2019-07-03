@@ -40,13 +40,6 @@ function removeDuplicateElement(myArray) {
   return follwingAuthors;
 }
 
-function getPageFromUrl(page) {
-  if (page) {
-    return parseInt(page, 10) / 10 + 1;
-  }
-  return 1;
-}
-
 function getPager(totalItems, currentPage = 1, itemPerPage = 10) {
   const totalPages = Math.ceil(totalItems / itemPerPage);
   let startPage, endPage;
@@ -85,4 +78,4 @@ function getPager(totalItems, currentPage = 1, itemPerPage = 10) {
   };
 }
 
-export { scrollToTop, removeDuplicateElement, getPageFromUrl, getPager };
+export { scrollToTop, removeDuplicateElement, getPager };
